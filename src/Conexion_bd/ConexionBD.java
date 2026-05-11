@@ -19,10 +19,10 @@ public class ConexionBD {
             // ruta con respecto a la conexion de la bd
             //ruta = jdbd:mysql://la ruta de a base de datos:puerto/nombre_bd
             String hostBD, userBD, pswBD, portDB, nombreDB;
-            hostBD = "b0eirh85g07idujxecwy-mysql.services.clever-cloud.com";
-            nombreDB = "b0eirh85g07idujxecwy";
-            userBD = "urm2wyajnojuwoft";
-            pswBD = "se2YNRI7tkxMU60mKOU8";
+            hostBD = "b8v9zoed76e6bdwdq7ei-mysql.services.clever-cloud.com";
+            nombreDB = "b8v9zoed76e6bdwdq7ei";
+            userBD = "uwc9qd7jjmvcwqbu";
+            pswBD = "CvC1IaNbJqTftvdZnZth";
             portDB = "3306";
 
             this.url ="jdbc:mysql://" + hostBD + ":"+portDB+"/"+nombreDB;
