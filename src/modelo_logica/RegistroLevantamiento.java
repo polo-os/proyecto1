@@ -10,6 +10,16 @@ import java.util.List;
 public class RegistroLevantamiento {
     private  int idRegistro,pesoLevantado,repeticiones;
     private ConexionBD conexionBD;
+    private Ejercicio ejercicio;
+    private Usuario usuario;
+
+    public Ejercicio getEjercicio() {
+        return ejercicio;
+    }
+
+    public void setEjercicio(Ejercicio ejercicio) {
+        this.ejercicio = ejercicio;
+    }
 
     public RegistroLevantamiento() {
     }
@@ -81,19 +91,30 @@ public List<RegistroLevantamiento>consultarRegistroBD(){
 
     this.conexionBD=new ConexionBD();
     //sentencia sql
-    String sql="SELECT * FROM Registro_Levantamieto";
+    String sql="SELECT nombre_ejercicio,grupo_muscular,peso,repeticiones\n" +
+            "FROM Registro_Levantamiento\n" +
+            "INNER JOIN Ejercicio USING(id_ejercicio) ";
     try {
+
         ResultSet rs=this.conexionBD.consultaBD(sql);
         RegistroLevantamiento registro;
+        Ejercicio ejer;
         while (rs.next()){
+            ejer=new Ejercicio();
+            ejer.setIdEjercicio(rs.getInt("id_ejercicio"));
+            ejer.setNombreEjercicio(rs.getString("nombre_ejercicio"));
+            ejer.setGrupoMuscular(rs.getString("grupo_muscular"));
             registro=new RegistroLevantamiento();
             registro.setIdRegistro(rs.getInt("id_registro"));
+            registro.setEjercicio(ejer);
             registro.setPesoLevantado(rs.getInt("peso"));
             registro.setRepeticiones(rs.getInt("repeticiones"));
+
             listaReg.add(registro);
         }
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(null,"Error al consultar en la clase RegistroLevantamiento");
+        JOptionPane.showMessageDialog(null,"Error al consultar en la clase RegistroLevantamiento\n" +
+                "tipo de error: "+e.getMessage());
     }
     return listaReg;
 }

@@ -67,8 +67,8 @@ public class Ejercicio {
 
         this.conexionBD = new ConexionBD();
 
-        String sql = "INSERT INTO Ejercicio(nombre,grupo_muscular) VALUES('"+this.nombreEjercicio+"',"+
-                this.grupoMuscular+");";
+        String sql = "INSERT INTO Ejercicio(nombre_ejercicio,grupo_muscular) VALUES('"+this.nombreEjercicio+"','"+
+                this.grupoMuscular+"');";
 
         if(this.conexionBD.setAutoCommitBD(false)){
             if(this.conexionBD.insertarBD(sql)){
@@ -106,6 +106,7 @@ public class Ejercicio {
                 ejer = new Ejercicio();
 
                 ejer.setIdEjercicio(rs.getInt("id_ejercicio"));
+                ejer.setNombreEjercicio(rs.getString("nombre_ejercicio"));
                 ejer.setGrupoMuscular(rs.getString("grupo_muscular"));
                 ejercicioList.add(ejer);
 

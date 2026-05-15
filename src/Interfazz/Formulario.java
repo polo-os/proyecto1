@@ -1,15 +1,25 @@
 package Interfazz;
 
 import enumm.Ejercicios;
-import interfaz.InterfazGrafica;
+import enumm.GrMuscul;
+import modelo_logica.Ejercicio;
+import modelo_logica.RegistroLevantamiento;
+import modelo_logica.Usuario;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class Formulario extends JFrame {
     //Atributos
+
+    private RegistroLevantamiento registroLevantamiento;
+    private Ejercicio ejercicio;
     private JPanel panel1;
     private JTextField userin;
     private JTextField passwordin;
@@ -76,6 +86,8 @@ public class Formulario extends JFrame {
     private JButton actualizarButtonRK;
     private JLabel puestoLabelRK;
     private JLabel filPorLabelRK;
+    private JLabel grMusculJlabelRE;
+    private JComboBox grMusculRE;
 
     //Metodos
     public Formulario() {
@@ -88,6 +100,12 @@ public class Formulario extends JFrame {
         ejercicioRE.setModel(jComboBox.getModel());
 
         AutoCompleteDecorator.decorate(ejercicioRE);
+
+        JComboBox jComboBox2 = new JComboBox(GrMuscul.values());
+
+        grMusculRE.setModel(jComboBox2.getModel());
+
+        AutoCompleteDecorator.decorate(grMusculRE);
 
 
         //registrarse
@@ -103,6 +121,12 @@ public class Formulario extends JFrame {
                 inicioBottonin();
             }
         });
+        agregarButtonRE.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                agregarButtonRE();
+            }
+        });
     }
 
 
@@ -116,4 +140,65 @@ public class Formulario extends JFrame {
         InicioSesion.setVisible(false);
         paginaPrincipal.setVisible(true);
     }
+
+ public void mostrartablaRE(){
+     //Datos de la tabla
+     Object[][] filaDatos= new Object[1][4];
+     Object[] nombreColumnas={"Ejercicio","Grupo Muscular","Peso","Repeticiones"};
+     DefaultTableModel modeloTabla =new DefaultTableModel();
+
+     //ASIGNAR MODELO DE LA TABLA A LA INTERFAZ GRAFICA
+     modeloTabla.setColumnIdentifiers(nombreColumnas);
+     this.table1RE.setModel(modeloTabla);
+
+     //Fuente para el encabezado de la tabla
+     JTableHeader tableHeader=this.table1RE.getTableHeader();
+     tableHeader.setBackground(Color.ORANGE);
+     tableHeader.setForeground(Color.MAGENTA);
+     tableHeader.setFont(new Font("Impact", Font.ITALIC,14));
+
+
+     List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarRegistroBD();
+
+     for(RegistroLevantamiento registroLevantamiento:listaReg){
+         filaDatos[0][0]=registroLevantamiento.getEjercicio().getNombreEjercicio();
+         filaDatos[0][1]=registroLevantamiento.getEjercicio().getGrupoMuscular();
+         filaDatos[0][2]=registroLevantamiento.getPesoLevantado();
+         filaDatos[0][3]=registroLevantamiento.getRepeticiones();
+         modeloTabla.addRow(filaDatos[0]);
+
+         actualizarButtonRE.setEnabled(true);
+         eliminarButtonRE.setEnabled(true);
+     }
+ }
+
+    //Agregar Peso
+    public void agregarButtonRE(){
+        this.registroLevantamiento=new RegistroLevantamiento();
+        this.ejercicio = new Ejercicio();
+        for(int i = 0; i < table1RE.getRowCount(); i++){
+            if(table1RE.getValueAt(i,0).toString()
+                    .equals(ejercicioRE.getSelectedItem().toString())){
+                JOptionPane.showMessageDialog(null,
+                        "Ya has insertado ese ejercicio");
+                return;
+            }
+        }
+
+try {
+    this.registroLevantamiento.setPesoLevantado(Integer.parseInt(pesoRE.getText()));
+    this.registroLevantamiento.setRepeticiones(Integer.parseInt(repeticionesRE.getText()));
+    this.ejercicio.setNombreEjercicio(ejercicioRE.getSelectedItem().toString());
+    this.ejercicio.setGrupoMuscular(grMusculRE.getSelectedItem().toString());
+    this.registroLevantamiento.insertarRegistroBD();
+    this.ejercicio.insertarRegistroBD();
+    mostrartablaRE();
+
+} catch (Exception e){
+    JOptionPane.showMessageDialog(null,"Error al agregar registro \n"+"tipo de error: "+e.getMessage() );
 }
+
+}
+
+}
+

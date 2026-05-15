@@ -63,10 +63,10 @@ public class ConexionBD {
             }
             catch (Exception e){
                 conf = false;
-                JOptionPane.showMessageDialog(null,"\n Error al Insertar Datos "+"en la Base de Dato"+
+                JOptionPane.showMessageDialog(null,"\n Error al Insertar Datos "+"en la Base de Datos"+
                         "\n Tipo de Error: " + e.getMessage());
 
-                System.out.println("\n Error al Insertar Datos "+"en la Base de Dato"+
+                System.out.println("\n Error al Insertar Datos "+"en la Base de Datos"+
                         "\n Tipo de Error: " + e.getMessage());
             }
             return conf;
@@ -85,10 +85,10 @@ public class ConexionBD {
             }
             catch (Exception e){
 
-                JOptionPane.showMessageDialog(null,"\n Error al Consultar Datos "+"en la Base de Dato"+
+                JOptionPane.showMessageDialog(null,"\n Error al Consultar Datos "+"en la Base de Datos"+
                         "\n Tipo de Error: " + e.getMessage());
 
-                System.out.println("\n Error al Consultar Datos "+"en la Base de Dato"+
+                System.out.println("\n Error al Consultar Datos "+"en la Base de Datos"+
                         "\n Tipo de Error: " + e.getMessage());
             }
             return resultSet;
@@ -109,10 +109,10 @@ public class ConexionBD {
             catch (Exception e){
                 conf = false;
 
-                System.out.println("\n Error al Actualizar Datos "+"en la Base de Dato"+
+                System.out.println("\n Error al Actualizar Datos "+"en la Base de Datos"+
                         "\n Tipo de Error: " + e.getMessage());
 
-                JOptionPane.showMessageDialog(null,"\n Error al Actualizar Datos "+"en la Base de Dato"+
+                JOptionPane.showMessageDialog(null,"\n Error al Actualizar Datos "+"en la Base de Datos"+
                         "\n Tipo de Error: " + e.getMessage());
 
 
