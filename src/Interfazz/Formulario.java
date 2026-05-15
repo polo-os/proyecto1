@@ -1,7 +1,7 @@
 package Interfazz;
 
 import enumm.Ejercicios;
-import interfaz.InterfazGrafica;
+import modelo_logica.Usuario;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 import javax.swing.*;
@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Formulario extends JFrame {
+
+    //Compocicion
+    private Usuario usuario;
     //Atributos
     private JPanel panel1;
     private JTextField userin;
@@ -28,7 +31,6 @@ public class Formulario extends JFrame {
     private JButton registrarButtonRU;
     private JButton atrasButtonRU;
     private JTextField userRU;
-    private JSpinner kgRU;
     private JTextField altRU;
     private JLabel alturaLabelRU;
     private JSpinner edadRU;
@@ -36,9 +38,10 @@ public class Formulario extends JFrame {
     private JLabel passwordLabelRU;
     private JTextField passwordRU;
     private JLabel confPasswordLabelRU;
+    private JTextField kgRu;
 
     private JPanel RegistroRE;
-    public JPanel RegistroPeso;
+    private JPanel RegistroPeso;
     private JComboBox ejercicioRE;
     private JTextField pesoRE;
     private JTextField repeticionesRE;
@@ -77,10 +80,14 @@ public class Formulario extends JFrame {
     private JLabel puestoLabelRK;
     private JLabel filPorLabelRK;
 
+
     //Metodos
     public Formulario() {
 
         setContentPane(panel1);
+
+        this.usuario = new Usuario();
+
 
         //recibe los valores de la clase enumm
         JComboBox jComboBox = new JComboBox(Ejercicios.values());
@@ -103,17 +110,79 @@ public class Formulario extends JFrame {
                 inicioBottonin();
             }
         });
+        registrarButtonRU.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            registrarButtonRU();
+            }
+        });
+
+        acPesoButtonPP.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                acPesoButtonPP();
+            }
+        });
     }
 
 
     //Registrar
     public void irRegistrarButton(){
         InicioSesion.setVisible(false);
-        RegistroPeso.setVisible(true);
+        RegistroRE.setVisible(true);
     }
 
+    //Iniciar
     public void inicioBottonin(){
-        InicioSesion.setVisible(false);
-        paginaPrincipal.setVisible(true);
+
+        if (usuario.inicioSecion(userin.getText(),passwordin.getText())){
+            InicioSesion.setVisible(false);
+            pagPrincipal.setVisible(true);
+            UserPP.setText(userin.getText());
+
+        }
+        else {
+            userin.setText("");
+            passwordin.setText("");
+            JOptionPane.showMessageDialog(null,"Usuario o contraseñas incorrecta\n"+
+                    "Profavor Revisar");
+        }
+    }
+
+    //Registrar Usuario
+    public void registrarButtonRU(){
+
+        //Validar Datos dell Formulario
+        try{
+            //Agregar valores
+            this.usuario.setNombre(userRU.getText());
+            this.usuario.setEdad(Integer.parseInt(edadRU.getValue().toString()));
+            this.usuario.setPeso(Integer.parseInt(kgRu.getText()));
+            this.usuario.setAltura(Float.parseFloat(altRU.getText()));
+            this.usuario.setPassword(passwordRU.getText());
+
+            if(passworconfRU.getText().equals(this.usuario.getPassword())) {
+                if (this.usuario.insertarRegistroBD()) {
+                    JOptionPane.showMessageDialog(null, "Se Creo el Usuario Correctamente.. ");
+                    RegistroPeso.setVisible(true);
+                    RegistroRE.setVisible(false);
+                } else {
+                    JOptionPane.showMessageDialog(null, " Error al Crear el Usuario" + "\n Posible Error en la conexion");
+                }
+            }
+            else {
+                JOptionPane.showMessageDialog(null,"Error contraseña diferente a la ingresada anterirormente");
+            }
+        }
+        catch (Exception e){
+            JOptionPane.showMessageDialog(null,"Error al registrar el Usuario:\n "+
+                    "Tipo de Error: "+e.getMessage()+
+                    "\n\nValiar Cajas de Texto");
+        }
+    }
+
+    public void acPesoButtonPP(){
+        pagPrincipal.setVisible(false);
+        RegistroPeso.setVisible(true);
     }
 }
