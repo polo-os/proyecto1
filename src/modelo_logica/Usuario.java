@@ -2,7 +2,9 @@ package modelo_logica;
 
 import Conexion_bd.ConexionBD;
 
+import javax.swing.*;
 import java.sql.ClientInfoStatus;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.List;
 public class Usuario {
     private int id_usuario;
     private String nombre;
-    private byte edad;
+    private int edad;
     private float altura;
     private int peso;
     private String password;
@@ -21,7 +23,7 @@ public class Usuario {
 
     public Usuario() {}
 
-    public Usuario(String nombre, byte edad, float altura, int peso, String password, ConexionBD conexionBD) {
+    public Usuario(String nombre, int edad, float altura, int peso, String password, ConexionBD conexionBD) {
         this.nombre = nombre;
         this.edad = edad;
         this.altura = altura;
@@ -56,11 +58,11 @@ public class Usuario {
         this.nombre = nombre;
     }
 
-    public byte getEdad() {
+    public int getEdad() {
         return edad;
     }
 
-    public void setEdad(byte edad) {
+    public void setEdad(int edad) {
         this.edad = edad;
     }
 
@@ -103,7 +105,7 @@ public class Usuario {
         this.conexionBD = new ConexionBD();
 
         String sql = "INSERT INTO Usuario(nombre,edad,altura,peso,contraseña) VALUES('"+this.nombre+"',"+
-                this.edad+", "+this.altura+", "+this.peso+", "+this.password+");";
+                this.edad+", "+this.altura+", "+this.peso+", '"+this.password+"');";
 
         if(this.conexionBD.setAutoCommitBD(false)){
             if(this.conexionBD.insertarBD(sql)){
@@ -215,6 +217,38 @@ public class Usuario {
             conf = false;
         }
         return conf;
+
+    }
+
+    public boolean inicioSecion(String nombre,String passwordd){
+        boolean conf;
+
+        try{
+
+            this.conexionBD = new ConexionBD();
+
+            String sql =
+                    "SELECT * FROM Usuario " +
+                            "WHERE nombre = ? " +
+                            "AND BINARY contraseña = ?";
+
+            PreparedStatement ps =
+                    conexionBD.getConnection().prepareStatement(sql);
+            ps.setString(1, nombre);
+
+            ps.setString(2, passwordd);
+
+            ResultSet rs = ps.executeQuery();
+
+            conf = rs.next();
+
+        }
+        catch (Exception e){
+            JOptionPane.showMessageDialog(null,"Error al iniciar secion"+
+                    "\n Tipo de Error"+e.getMessage());
+            conf = false;
+        }
+        return  conf;
 
     }
 
