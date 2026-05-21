@@ -147,7 +147,7 @@ public class Usuario {
                 user.setEdad(rs.getByte("edad"));
                 user.setAltura(rs.getFloat("altura"));
                 user.setPeso(rs.getInt("peso"));
-                user.setPassword(rs.getString("password"));
+                user.setPassword(rs.getString("contraseña"));
                 usuarioList.add(user);
 
             }
@@ -240,13 +240,23 @@ public class Usuario {
 
             ResultSet rs = ps.executeQuery();
 
-            conf = rs.next();
+            if(rs.next()){
+                this.id_usuario = rs.getInt("id_usuario");
+                this.nombre = rs.getString("nombre");
+                conf = true;
+            }
+            else {
+             conf = false;
+            }
 
         }
         catch (Exception e){
             JOptionPane.showMessageDialog(null,"Error al iniciar secion"+
                     "\n Tipo de Error"+e.getMessage());
             conf = false;
+        }
+        finally{
+            this.conexionBD.cerrarConexion();
         }
         return  conf;
 

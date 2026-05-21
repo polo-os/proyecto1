@@ -102,14 +102,18 @@ public class Formulario extends JFrame {
         setContentPane(panel1);
 
         this.usuario = new Usuario();
+        this.registroLevantamiento = new RegistroLevantamiento();
+        this.ejercicio = new Ejercicio();
 
 
         //recibe los valores de la clase enumm
         JComboBox jComboBox = new JComboBox(Ejercicios.values());
 
         ejercicioRE.setModel(jComboBox.getModel());
+        filPcomboBox1RK.setModel(jComboBox.getModel());
 
         AutoCompleteDecorator.decorate(ejercicioRE);
+        AutoCompleteDecorator.decorate(filPcomboBox1RK);
 
         JComboBox jComboBox2 = new JComboBox(GrMuscul.values());
 
@@ -181,7 +185,7 @@ public class Formulario extends JFrame {
     public void registrarButtonRU(){
 
         //Validar Datos dell Formulario
-        try{
+        try {
             //Agregar valores
             this.usuario.setNombre(userRU.getText());
             this.usuario.setEdad(Integer.parseInt(edadRU.getValue().toString()));
@@ -189,13 +193,20 @@ public class Formulario extends JFrame {
             this.usuario.setAltura(Float.parseFloat(altRU.getText()));
             this.usuario.setPassword(passwordRU.getText());
 
-            if(passworconfRU.getText().equals(this.usuario.getPassword())) {
+            if (passworconfRU.getText().equals(this.usuario.getPassword())) {
                 if (this.usuario.insertarRegistroBD()) {
-                    JOptionPane.showMessageDialog(null, "Se Creo el Usuario Correctamente.. ");
+
+                    // iniciar sesión automáticamente
+                    this.usuario.inicioSecion(
+                            userRU.getText(),
+                            passwordRU.getText()
+                    );
+
                     RegistroPeso.setVisible(true);
                     RegistroRE.setVisible(false);
+
                 } else {
-                    JOptionPane.showMessageDialog(null, " Error al Crear el Usuario" + "\n Posible Error en la conexion");
+                        JOptionPane.showMessageDialog(null, " Error al Crear el Usuario" + "\n Posible Error en la conexion");
                 }
             }
             else {
@@ -209,11 +220,13 @@ public class Formulario extends JFrame {
         }
     }
 
+    //ir a actualizar
     public void acPesoButtonPP(){
         pagPrincipal.setVisible(false);
         RegistroPeso.setVisible(true);
     }
 
+    //mostrar tabla
     public void mostrartablaRE(){
         //Datos de la tabla
         Object[][] filaDatos= new Object[1][4];
@@ -231,7 +244,7 @@ public class Formulario extends JFrame {
         tableHeader.setFont(new Font("Impact", Font.ITALIC,14));
 
 
-        List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarRegistroBD();
+        List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarRegistroBD(this.usuario.getId_usuario());
 
         for(RegistroLevantamiento registroLevantamiento:listaReg){
             filaDatos[0][0]=registroLevantamiento.getEjercicio().getNombreEjercicio();
@@ -249,27 +262,56 @@ public class Formulario extends JFrame {
     public void agregarButtonRE(){
         this.registroLevantamiento=new RegistroLevantamiento();
         this.ejercicio = new Ejercicio();
-        for(int i = 0; i < table1RE.getRowCount(); i++){
-            if(table1RE.getValueAt(i,0).toString()
-                    .equals(ejercicioRE.getSelectedItem().toString())){
-                JOptionPane.showMessageDialog(null,
-                        "Ya has insertado ese ejercicio");
-                return;
-            }
-        }
 
         try {
             this.registroLevantamiento.setPesoLevantado(Integer.parseInt(pesoRE.getText()));
             this.registroLevantamiento.setRepeticiones(Integer.parseInt(repeticionesRE.getText()));
             this.ejercicio.setNombreEjercicio(ejercicioRE.getSelectedItem().toString());
             this.ejercicio.setGrupoMuscular(grMusculRE.getSelectedItem().toString());
-            this.registroLevantamiento.insertarRegistroBD();
-            this.ejercicio.insertarRegistroBD();
-            mostrartablaRE();
 
+
+            //ver si hay un ejercicio Repetido en caso de que no crearlo
+            if(!this.ejercicio.busEjercico()){
+
+                this.ejercicio.insertarRegistroBD();
+
+                this.ejercicio.busEjercico();
+            }
+
+            //conectar con Usuario y ejercicio
+            this.registroLevantamiento.setUsuario(this.usuario);
+            this.registroLevantamiento.setEjercicio(this.ejercicio);
+
+            //agregar el registro
+
+            if(this.registroLevantamiento.busRegistro()){
+                JOptionPane.showMessageDialog(null,
+                        "Ya tienes registrado este ejercicio");
+            }
+            else{
+                if(this.registroLevantamiento.insertarRegistroBD()){
+                    mostrartablaRE();
+                }
+                else {
+                    JOptionPane.showMessageDialog(null,
+                            "No se pudo agregar el registro");
+                }
+            }
         } catch (Exception e){
             JOptionPane.showMessageDialog(null,"Error al agregar registro \n"+"tipo de error: "+e.getMessage() );
         }
+
+    }
+
+    public void mostrarTableFil(){
+
+        //Datos relacionados a la tabla
+        Object[][] filaDatos = new  Object[1][5];
+        Object[] nombreColumna = {"Puesto","Nombre","Maquina","Repeticiones","Peso"};
+
+
+    }
+    public void FiltrarButon(){
 
     }
 }

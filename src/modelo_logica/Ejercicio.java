@@ -2,6 +2,7 @@ package modelo_logica;
 
 import Conexion_bd.ConexionBD;
 
+import javax.swing.*;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +70,6 @@ public class Ejercicio {
 
         String sql = "INSERT INTO Ejercicio(nombre_ejercicio,grupo_muscular) VALUES('"+this.nombreEjercicio+"','"+
                 this.grupoMuscular+"');";
-
         if(this.conexionBD.setAutoCommitBD(false)){
             if(this.conexionBD.insertarBD(sql)){
                 this.conexionBD.commitBD();
@@ -129,7 +129,7 @@ public class Ejercicio {
 
         this.conexionBD = new ConexionBD();
 
-        String sql = "UPDATE Ejercicio SET nombre ='"+this.nombreEjercicio+"', grupo_muscular = '"+
+        String sql = "UPDATE Ejercicio SET nombre_ejercicio ='"+this.nombreEjercicio+"', grupo_muscular = '"+
                 this.grupoMuscular+";";
 
         if(this.conexionBD.setAutoCommitBD(false)){
@@ -157,7 +157,7 @@ public class Ejercicio {
 
         this.conexionBD = new ConexionBD();
 
-        String sql = "DELETE FROM Ejercicio WHERE id = " +
+        String sql = "DELETE FROM Ejercicio WHERE id_ejercicio= " +
                 this.idEjercicio + ";";
 
         if(this.conexionBD.setAutoCommitBD(false)){
@@ -180,5 +180,34 @@ public class Ejercicio {
 
     }
 
+    public boolean busEjercico(){
+
+        boolean ent = false;
+
+        this.conexionBD = new ConexionBD();
+
+        String sql = "SELECT * FROM Ejercicio "+
+                "Where nombre_ejercicio = '"+this.nombreEjercicio+"';";
+
+
+        try{
+            ResultSet rs = this.conexionBD.consultaBD(sql);
+
+            if(rs.next()){
+                this.idEjercicio = rs.getInt("id_ejercicio");
+                this.nombreEjercicio = rs.getString("nombre_ejercicio");
+                this.grupoMuscular = rs.getString("grupo_muscular");
+                ent = true;
+            }
+        }
+        catch (Exception e){
+            JOptionPane.showMessageDialog(null,"Error al buscar ejercicio\n"+
+                    "Tipo de Error:\n" + e.getMessage());
+        }
+        finally {
+            this.conexionBD.cerrarConexion();
+        }
+        return ent;
+    }
 }
 

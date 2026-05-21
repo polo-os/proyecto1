@@ -13,14 +13,6 @@ public class RegistroLevantamiento {
     private Ejercicio ejercicio;
     private Usuario usuario;
 
-    public Ejercicio getEjercicio() {
-        return ejercicio;
-    }
-
-    public void setEjercicio(Ejercicio ejercicio) {
-        this.ejercicio = ejercicio;
-    }
-
     public RegistroLevantamiento() {
     }
 
@@ -33,6 +25,30 @@ public class RegistroLevantamiento {
         this.idRegistro = idRegistro;
         this.pesoLevantado = pesoLevantado;
         this.repeticiones = repeticiones;
+    }
+
+    public Ejercicio getEjercicio() {
+        return ejercicio;
+    }
+
+    public void setEjercicio(Ejercicio ejercicio) {
+        this.ejercicio = ejercicio;
+    }
+
+    public ConexionBD getConexionBD() {
+        return conexionBD;
+    }
+
+    public void setConexionBD(ConexionBD conexionBD) {
+        this.conexionBD = conexionBD;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public int getIdRegistro() {
@@ -65,8 +81,8 @@ public class RegistroLevantamiento {
         this.conexionBD=new ConexionBD();
         boolean conf;
         //Sentencia sql
-        String sql="INSERT INTO Registro_Levantamiento(Peso,Repeticiones)"
-                + "VALUES ("+this.getPesoLevantado()+","+this.getRepeticiones()+");";
+        String sql="INSERT INTO Registro_Levantamiento(id_usuario,id_ejercicio,Peso,Repeticiones)"
+                + "VALUES ("+this.usuario.getId_usuario()+","+this.ejercicio.getIdEjercicio()+","+this.getPesoLevantado()+","+this.getRepeticiones()+");";
 
         if (this.conexionBD.setAutoCommitBD(false)){
             if (this.conexionBD.insertarBD(sql)){
@@ -86,14 +102,15 @@ public class RegistroLevantamiento {
     }
 
 //SELECT
-public List<RegistroLevantamiento>consultarRegistroBD(){
+public List<RegistroLevantamiento>consultarRegistroBD(int idusuario){
     List<RegistroLevantamiento> listaReg=new ArrayList<>();
 
     this.conexionBD=new ConexionBD();
     //sentencia sql
-    String sql="SELECT nombre_ejercicio,grupo_muscular,peso,repeticiones\n" +
-            "FROM Registro_Levantamiento\n" +
-            "INNER JOIN Ejercicio USING(id_ejercicio) ";
+    String sql = "SELECT id_registro,id_ejercicio,nombre_ejercicio,grupo_muscular,peso,repeticiones " +
+            "FROM Registro_Levantamiento " +
+            "INNER JOIN Ejercicio USING(id_ejercicio) " +
+            "WHERE id_usuario = "+idusuario+";";
     try {
 
         ResultSet rs=this.conexionBD.consultaBD(sql);
@@ -166,4 +183,83 @@ public boolean eliminarRegistroBD(){
     return conf;
 }
 
+public boolean busRegistro(){
+        boolean ent;
+
+        this.conexionBD = new ConexionBD();
+
+        String sql = "SELECT * FROM Registro_Levantamiento "+
+                "WHERE id_usuario = "+this.usuario.getId_usuario()+
+                " AND id_ejercicio = "+this.ejercicio.getIdEjercicio()+";";
+
+        try{
+            ResultSet rs = this.conexionBD.consultaBD(sql);
+
+            if(rs.next()){
+                ent = true;
+            }
+            else {
+                ent = false;
+            }
+        }
+        catch (Exception e){
+            JOptionPane.showMessageDialog(null,
+                    "Error al buscar registro\n" +
+                            "Tipo de error: " + e.getMessage());
+            ent = false;
+        }
+        finally {
+            this.conexionBD.cerrarConexion();
+        }
+        return  ent;
+    }
+
+    public List<RegistroLevantamiento> filtrarEjercicio(int idusuario,String nombre_ejercicio){
+
+        List<RegistroLevantamiento> listreg =  new ArrayList<>();
+
+        this.conexionBD = new ConexionBD();
+
+        String sql = "SELECT id_registro,id_ejercicio,nombre_ejercicio," +
+                    "grupo_muscular,peso,repeticiones " +
+                    "FROM Registro_Levantamiento " +
+                    "INNER JOIN Ejercicio USING(id_ejercicio) " +
+                    "WHERE id_usuario = " + idusuario +
+                    " AND nombre_ejercicio = '" + nombre_ejercicio + "';";
+
+        try{
+
+            ResultSet rs = this.conexionBD.consultaBD(sql);
+            RegistroLevantamiento registro;
+            Ejercicio ejer;
+
+            while (rs.next()){
+
+                ejer = new Ejercicio();
+                ejer.setIdEjercicio(rs.getInt("id_ejercico"));
+                ejer.setNombreEjercicio(rs.getString("nombre_ejercicio"));
+                ejer.setGrupoMuscular(rs.getString("grupo_muscular"));
+
+                registro = new RegistroLevantamiento();
+                registro.setIdRegistro(rs.getInt("id_registro"));
+                registro.setEjercicio(ejer);
+                registro.setRepeticiones(rs.getInt("repeticiones"));
+                registro.setPesoLevantado(rs.getInt("peso"));
+
+                listreg.add(registro);
+            }
+
+        }
+        catch (Exception e){
+
+            JOptionPane.showMessageDialog(null,
+                    "Error al filtrar ejercicios\n" +
+                            "Tipo de error: " + e.getMessage());
+
+        }
+        finally {
+            this.conexionBD.cerrarConexion();
+        }
+        return listreg;
+    }
 }
