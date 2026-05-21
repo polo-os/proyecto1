@@ -13,8 +13,6 @@ import java.awt.event.ActionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 
@@ -53,7 +51,7 @@ public class Formulario extends JFrame {
     private JLabel confPasswordLabelRU;
     private JTextField kgRu;
 
-    private JPanel RegistroRE;
+    private JPanel RegistroRU;
     private JPanel RegistroPeso;
     private JComboBox ejercicioRE;
     private JTextField pesoRE;
@@ -121,7 +119,17 @@ public class Formulario extends JFrame {
 
         AutoCompleteDecorator.decorate(grMusculRE);
 
+        filtrarcomboBoxPP.setModel(jComboBox2.getModel());
 
+        AutoCompleteDecorator.decorate(filtrarcomboBoxPP);
+
+        filPcomboBox1RK.setModel(jComboBox2.getModel());
+
+        AutoCompleteDecorator.decorate(filPcomboBox1RK);
+
+
+
+        //registrarse
         //registrarse
         RegistrarseButtonin.addActionListener(new ActionListener() {
             @Override
@@ -138,7 +146,7 @@ public class Formulario extends JFrame {
         registrarButtonRU.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            registrarButtonRU();
+                registrarButtonRU();
             }
         });
 
@@ -154,14 +162,48 @@ public class Formulario extends JFrame {
                 agregarButtonRE();
             }
         });
+        atrasButtonRU.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                atrasButtonRU();
+            }
+        });
+
+        cerrarSesionButtonPP.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cerrarSesionButtonPP();
+            }
+        });
+        actualizarButtonRE.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                actualizarButtonRE();
+            }
+        });
+        eliminarButtonRE.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                eliminarButtonRE();
+            }
+        });
+        continuarButtonRE.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                continuarButtonRE();
+            }
+        });
     }
+
+
 
 
 
     //Registrar
     public void irRegistrarButton(){
         InicioSesion.setVisible(false);
-        RegistroRE.setVisible(true);
+        RegistroRU.setVisible(true);
+
     }
 
     //Iniciar
@@ -171,13 +213,13 @@ public class Formulario extends JFrame {
             InicioSesion.setVisible(false);
             pagPrincipal.setVisible(true);
             UserPP.setText(userin.getText());
-
+            mostrartablaPP();
         }
         else {
             userin.setText("");
             passwordin.setText("");
             JOptionPane.showMessageDialog(null,"Usuario o contraseñas incorrecta\n"+
-                    "Profavor Revisar");
+                    "Porfavor Revisar");
         }
     }
 
@@ -203,7 +245,7 @@ public class Formulario extends JFrame {
                     );
 
                     RegistroPeso.setVisible(true);
-                    RegistroRE.setVisible(false);
+                    RegistroRU.setVisible(false);
 
                 } else {
                         JOptionPane.showMessageDialog(null, " Error al Crear el Usuario" + "\n Posible Error en la conexion");
@@ -224,7 +266,48 @@ public class Formulario extends JFrame {
     public void acPesoButtonPP(){
         pagPrincipal.setVisible(false);
         RegistroPeso.setVisible(true);
+        mostrartablaRE();
     }
+
+
+
+    public void atrasButtonRU(){
+        InicioSesion.setVisible(true);
+        RegistroRU.setVisible(false);
+
+    }
+
+
+    public void mostrartablaPP(){
+        this.registroLevantamiento = new RegistroLevantamiento();
+        //Datos de la tabla
+        Object[][] filaDatos= new Object[1][4];
+        Object[] nombreColumnas={"Ejercicio","Grupo Muscular","Peso","Repeticiones"};
+        DefaultTableModel modeloTabla =new DefaultTableModel();
+
+        //ASIGNAR MODELO DE LA TABLA A LA INTERFAZ GRAFICA
+        modeloTabla.setColumnIdentifiers(nombreColumnas);
+        this.table2PP.setModel(modeloTabla);
+
+        //Fuente para el encabezado de la tabla
+        JTableHeader tableHeader=this.table1RE.getTableHeader();
+        tableHeader.setBackground(Color.ORANGE);
+        tableHeader.setForeground(Color.MAGENTA);
+        tableHeader.setFont(new Font("Impact", Font.ITALIC,14));
+
+
+        List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarRegistroBD(this.usuario.getId_usuario());
+
+        for(RegistroLevantamiento registroLevantamiento:listaReg){
+            filaDatos[0][0]=registroLevantamiento.getEjercicio().getNombreEjercicio();
+            filaDatos[0][1]=registroLevantamiento.getEjercicio().getGrupoMuscular();
+            filaDatos[0][2]=registroLevantamiento.getPesoLevantado();
+            filaDatos[0][3]=registroLevantamiento.getRepeticiones();
+            modeloTabla.addRow(filaDatos[0]);
+
+        }
+    }
+
 
     //mostrar tabla
     public void mostrartablaRE(){
@@ -302,6 +385,52 @@ public class Formulario extends JFrame {
         }
 
     }
+
+
+    private void actualizarButtonRE(){
+        try{
+
+            this.ejercicio.setNombreEjercicio(ejercicioRE.getSelectedItem().toString());
+            this.ejercicio.setGrupoMuscular(grMusculRE.getSelectedItem().toString());
+            this.registroLevantamiento.setEjercicio(this.ejercicio);
+            this.registroLevantamiento.setRepeticiones(Integer.parseInt(repeticionesRE.getText()));
+            this.registroLevantamiento.setPesoLevantado(Integer.parseInt(pesoRE.getText()));
+            //Actualizar BD
+            if (this.ejercicio.actualizarRegistroBD() && this.registroLevantamiento.actualizarRegistroBD()) {
+                JOptionPane.showMessageDialog(null, "\nProducto actualizado correctamente!!!!");
+                mostrartablaRE();
+            } else {
+                JOptionPane.showMessageDialog(null, "ERORRR AL ACTUALIZAR");
+            }
+
+
+
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null,"Verifique que las cajas de texto correspondan" +
+                    "a valores numericos \n tipo de error: "+e.getMessage());
+        }
+
+
+    }
+
+    private  void eliminarButtonRE(){
+        ejercicioRE.setSelectedIndex(0);
+        grMusculRE.setSelectedIndex(0);
+        repeticionesRE.setText("");
+        pesoRE.setText("");
+    }
+
+    private void continuarButtonRE(){
+        pagPrincipal.setVisible(true);
+        RegistroPeso.setVisible(false);
+    }
+
+    public void cerrarSesionButtonPP(){
+        pagPrincipal.setVisible(false);
+        InicioSesion.setVisible(true);
+    }
+
+
 
     public void mostrarTableFil(){
 

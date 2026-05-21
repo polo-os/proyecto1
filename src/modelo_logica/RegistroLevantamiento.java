@@ -9,6 +9,7 @@ import java.util.List;
 
 public class RegistroLevantamiento {
     private  int idRegistro,pesoLevantado,repeticiones;
+    //conexion bd
     private ConexionBD conexionBD;
     private Ejercicio ejercicio;
     private Usuario usuario;
@@ -132,6 +133,9 @@ public List<RegistroLevantamiento>consultarRegistroBD(int idusuario){
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null,"Error al consultar en la clase RegistroLevantamiento\n" +
                 "tipo de error: "+e.getMessage());
+    }
+    finally {
+        this.conexionBD.cerrarConexion();
     }
     return listaReg;
 }
