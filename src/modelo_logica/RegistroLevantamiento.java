@@ -76,7 +76,7 @@ public class RegistroLevantamiento {
         this.repeticiones = repeticiones;
     }
 
-// INSERTAR
+    // INSERTAR
     public boolean insertarRegistroBD(){
         //conexion a la bd
         this.conexionBD=new ConexionBD();
@@ -102,92 +102,92 @@ public class RegistroLevantamiento {
         return conf;
     }
 
-//SELECT
-public List<RegistroLevantamiento>consultarRegistroBD(int idusuario){
-    List<RegistroLevantamiento> listaReg=new ArrayList<>();
+    //SELECT
+    public List<RegistroLevantamiento>consultarRegistroBD(int idusuario){
+        List<RegistroLevantamiento> listaReg=new ArrayList<>();
 
-    this.conexionBD=new ConexionBD();
-    //sentencia sql
-    String sql = "SELECT id_registro,id_ejercicio,nombre_ejercicio,grupo_muscular,peso,repeticiones " +
-            "FROM Registro_Levantamiento " +
-            "INNER JOIN Ejercicio USING(id_ejercicio) " +
-            "WHERE id_usuario = "+idusuario+";";
-    try {
+        this.conexionBD=new ConexionBD();
+        //sentencia sql
+        String sql = "SELECT id_registro,id_ejercicio,nombre_ejercicio,grupo_muscular,peso,repeticiones " +
+                "FROM Registro_Levantamiento " +
+                "INNER JOIN Ejercicio USING(id_ejercicio) " +
+                "WHERE id_usuario = "+idusuario+";";
+        try {
 
-        ResultSet rs=this.conexionBD.consultaBD(sql);
-        RegistroLevantamiento registro;
-        Ejercicio ejer;
-        while (rs.next()){
-            ejer=new Ejercicio();
-            ejer.setIdEjercicio(rs.getInt("id_ejercicio"));
-            ejer.setNombreEjercicio(rs.getString("nombre_ejercicio"));
-            ejer.setGrupoMuscular(rs.getString("grupo_muscular"));
-            registro=new RegistroLevantamiento();
-            registro.setIdRegistro(rs.getInt("id_registro"));
-            registro.setEjercicio(ejer);
-            registro.setPesoLevantado(rs.getInt("peso"));
-            registro.setRepeticiones(rs.getInt("repeticiones"));
+            ResultSet rs=this.conexionBD.consultaBD(sql);
+            RegistroLevantamiento registro;
+            Ejercicio ejer;
+            while (rs.next()){
+                ejer=new Ejercicio();
+                ejer.setIdEjercicio(rs.getInt("id_ejercicio"));
+                ejer.setNombreEjercicio(rs.getString("nombre_ejercicio"));
+                ejer.setGrupoMuscular(rs.getString("grupo_muscular"));
+                registro=new RegistroLevantamiento();
+                registro.setIdRegistro(rs.getInt("id_registro"));
+                registro.setEjercicio(ejer);
+                registro.setPesoLevantado(rs.getInt("peso"));
+                registro.setRepeticiones(rs.getInt("repeticiones"));
 
-            listaReg.add(registro);
+                listaReg.add(registro);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,"Error al consultar en la clase RegistroLevantamiento\n" +
+                    "tipo de error: "+e.getMessage());
         }
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null,"Error al consultar en la clase RegistroLevantamiento\n" +
-                "tipo de error: "+e.getMessage());
+        finally {
+            this.conexionBD.cerrarConexion();
+        }
+        return listaReg;
     }
-    finally {
-        this.conexionBD.cerrarConexion();
-    }
-    return listaReg;
-}
 
-public boolean actualizarRegistroBD(){
+    public boolean actualizarRegistroBD(){
         boolean conf;
         //sentencia sql
         String sql="UPDATE Registro_Levantamiento set peso="
                 +this.getPesoLevantado()+",repeticiones="+this.getRepeticiones()+
                 "WHERE id_registro="+this.getIdRegistro()+";";
-    if (this.conexionBD.setAutoCommitBD(false)){
-        if (this.conexionBD.actualizarBD(sql)){
-            this.conexionBD.commitBD();
-            this.conexionBD.cerrarConexion();
-            conf=true;
+        if (this.conexionBD.setAutoCommitBD(false)){
+            if (this.conexionBD.actualizarBD(sql)){
+                this.conexionBD.commitBD();
+                this.conexionBD.cerrarConexion();
+                conf=true;
+            }else {
+                this.conexionBD.rollbackBD();
+                this.conexionBD.cerrarConexion();
+                conf=false;
+            }
         }else {
-            this.conexionBD.rollbackBD();
             this.conexionBD.cerrarConexion();
             conf=false;
         }
-    }else {
-        this.conexionBD.cerrarConexion();
-        conf=false;
+        return conf;
     }
-    return conf;
-}
 
-public boolean eliminarRegistroBD(){
-    boolean conf;
-    //conexion
-    this.conexionBD=new ConexionBD();
-    //sentencia sql
-    String sql="DELETE FROM Registro_Levantamiento WHERE id_registro="+this.getIdRegistro()+";";
+    public boolean eliminarRegistroBD(){
+        boolean conf;
+        //conexion
+        this.conexionBD=new ConexionBD();
+        //sentencia sql
+        String sql="DELETE FROM Registro_Levantamiento WHERE id_registro="+this.getIdRegistro()+";";
 
-    if (this.conexionBD.setAutoCommitBD(false)){
-        if (this.conexionBD.borrarBD(sql)){
-            this.conexionBD.commitBD();
-            this.conexionBD.cerrarConexion();
-            conf=true;
+        if (this.conexionBD.setAutoCommitBD(false)){
+            if (this.conexionBD.borrarBD(sql)){
+                this.conexionBD.commitBD();
+                this.conexionBD.cerrarConexion();
+                conf=true;
+            }else {
+                this.conexionBD.rollbackBD();
+                this.conexionBD.cerrarConexion();
+                conf=false;
+            }
         }else {
-            this.conexionBD.rollbackBD();
             this.conexionBD.cerrarConexion();
             conf=false;
         }
-    }else {
-        this.conexionBD.cerrarConexion();
-        conf=false;
+        return conf;
     }
-    return conf;
-}
 
-public boolean busRegistro(){
+    public boolean busRegistro(){
         boolean ent;
 
         this.conexionBD = new ConexionBD();
