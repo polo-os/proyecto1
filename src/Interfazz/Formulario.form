@@ -271,7 +271,7 @@
         </constraints>
         <properties>
           <enabled value="true"/>
-          <visible value="false"/>
+          <visible value="true"/>
         </properties>
         <border type="none"/>
         <children>
@@ -593,7 +593,7 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="bbe39" class="javax.swing.JTable" binding="table1" default-binding="true">
+                      <component id="bbe39" class="javax.swing.JTable" binding="table1RK">
                         <constraints/>
                         <properties/>
                       </component>
