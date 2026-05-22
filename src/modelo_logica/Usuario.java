@@ -243,6 +243,10 @@ public class Usuario {
             if(rs.next()){
                 this.id_usuario = rs.getInt("id_usuario");
                 this.nombre = rs.getString("nombre");
+                this.edad = rs.getInt("edad");
+                this.altura = rs.getFloat("altura");
+                this.peso =rs.getInt("peso");
+                this.password = rs.getString("contraseña");
                 conf = true;
             }
             else {
@@ -261,6 +265,10 @@ public class Usuario {
         return  conf;
 
     }
+
+
+
+
 
 }
 

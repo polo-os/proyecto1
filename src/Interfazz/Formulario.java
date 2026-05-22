@@ -83,7 +83,7 @@ public class Formulario extends JFrame {
     private JButton cerrarSesionButtonPP;
 
     private JPanel ranking;
-    private JTable table1RK;
+    private JTable table1;
     private JLabel tablaLabelRK;
     private JPanel paginaPrincipal;
     private JTextField puestoRK;
@@ -123,6 +123,9 @@ public class Formulario extends JFrame {
 
         AutoCompleteDecorator.decorate(filtrarcomboBoxPP);
 
+        filPcomboBox1RK.setModel(jComboBox2.getModel());
+
+        AutoCompleteDecorator.decorate(filPcomboBox1RK);
 
 
 
@@ -189,7 +192,9 @@ public class Formulario extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 continuarButtonRE();
             }
+
         });
+
         filtrarButtonRK.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -200,6 +205,13 @@ public class Formulario extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 actualizarRk();
+            }
+        });
+
+        seleccionarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                seleccionarButton();
             }
         });
     }
@@ -329,7 +341,6 @@ public class Formulario extends JFrame {
         modeloTabla.setColumnIdentifiers(nombreColumnas);
         this.table1RE.setModel(modeloTabla);
 
-
         //Fuente para el encabezado de la tabla
         JTableHeader tableHeader=this.table1RE.getTableHeader();
         tableHeader.setBackground(Color.ORANGE);
@@ -442,67 +453,16 @@ public class Formulario extends JFrame {
 
 
 
-    public void mostrarTableRK(List<RegistroLevantamiento> listReg){
+    public void mostrarTableFil(){
 
         //Datos relacionados a la tabla
         Object[][] filaDatos = new  Object[1][5];
-        Object[] nombreColumna = {"Puesto","Usuario","Maquina","Repeticiones","Peso"};
-
-        //asignar el modelo a la tabla
-        DefaultTableModel modeloTabla = (DefaultTableModel) (this.table1RK.getModel());
-        modeloTabla.setRowCount(0);
-
-        modeloTabla.setColumnIdentifiers(nombreColumna);
-
-        //Fuente para el encabezado de la tabla
-        JTableHeader tableHeader=this.table1RK.getTableHeader();
-        tableHeader.setBackground(Color.ORANGE);
-        tableHeader.setForeground(Color.MAGENTA);
-        tableHeader.setFont(new Font("Impact", Font.ITALIC,14));
-
-
-        int puesto = 1;
-
-        for (RegistroLevantamiento registroLevantamiento1:listReg){
-            filaDatos[0][0] = puesto;
-            filaDatos[0][1] = registroLevantamiento1.getUsuario().getNombre();
-            filaDatos[0][2] =registroLevantamiento1.getEjercicio().getNombreEjercicio();
-            filaDatos[0][3] =registroLevantamiento1.getRepeticiones();
-            filaDatos[0][4] =registroLevantamiento1.getPesoLevantado();
-
-
-            modeloTabla.addRow(filaDatos[0]);
-            puesto++;
-        }
+        Object[] nombreColumna = {"Puesto","Nombre","Maquina","Repeticiones","Peso"};
 
 
     }
-    public void FiltrarButon() {
+    public void FiltrarButon(){
 
-
-
-        //obtener Ejercicio
-        String nomEjerccio = filPcomboBox1RK.getSelectedItem().toString();
-
-        //llamar filtro
-        List<RegistroLevantamiento> listReg = registroLevantamiento.filtrarEjercicio(nomEjerccio);
-
-        //mostrar tabla
-        mostrarTableRK(listReg);
-
-        int puestoUser = 0;
-
-        for (int i = 0; i < listReg.size(); i++) {
-
-            if (listReg.get(i).getUsuario().getId_usuario() == this.usuario.getId_usuario()) {
-
-                puestoUser = i + 1;
-                break;
-            }
-        }
-
-        //mostrar puesto
-        puestoRK.setText(String.valueOf(puestoUser));
     }
 
     public void actualizarRk(){
@@ -511,7 +471,7 @@ public class Formulario extends JFrame {
     }
 
 
-}
 
+}
 
 
