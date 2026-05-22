@@ -218,37 +218,46 @@ public boolean busRegistro(){
         return  ent;
     }
 
-    public List<RegistroLevantamiento> filtrarEjercicio(int idusuario,String nombre_ejercicio){
+    public List<RegistroLevantamiento> filtrarEjercicio(String nombre_ejercicio){
 
         List<RegistroLevantamiento> listreg =  new ArrayList<>();
 
         this.conexionBD = new ConexionBD();
 
-        String sql = "SELECT id_registro,id_ejercicio,nombre_ejercicio," +
-                    "grupo_muscular,peso,repeticiones " +
-                    "FROM Registro_Levantamiento " +
-                    "INNER JOIN Ejercicio USING(id_ejercicio) " +
-                    "WHERE id_usuario = " + idusuario +
-                    " AND nombre_ejercicio = '" + nombre_ejercicio + "';";
+        String sql =
+                "SELECT " +
+                        "Registro_Levantamiento.id_usuario, " +
+                        "nombre, " +
+                        "nombre_ejercicio, " +
+                        "repeticiones, " +
+                        "Registro_Levantamiento.peso " +
+                        "FROM Registro_Levantamiento " +
+                        "INNER JOIN Usuario USING(id_usuario) " +
+                        "INNER JOIN Ejercicio USING(id_ejercicio) " +
+                        "WHERE nombre_ejercicio = '" + nombre_ejercicio + "' " +
+                        "ORDER BY Registro_Levantamiento.peso DESC;";
 
         try{
 
             ResultSet rs = this.conexionBD.consultaBD(sql);
             RegistroLevantamiento registro;
             Ejercicio ejer;
+            Usuario user;
 
             while (rs.next()){
 
                 ejer = new Ejercicio();
-                ejer.setIdEjercicio(rs.getInt("id_ejercico"));
                 ejer.setNombreEjercicio(rs.getString("nombre_ejercicio"));
-                ejer.setGrupoMuscular(rs.getString("grupo_muscular"));
 
                 registro = new RegistroLevantamiento();
-                registro.setIdRegistro(rs.getInt("id_registro"));
                 registro.setEjercicio(ejer);
                 registro.setRepeticiones(rs.getInt("repeticiones"));
                 registro.setPesoLevantado(rs.getInt("peso"));
+
+                user = new Usuario();
+                user.setId_usuario(rs.getInt("id_usuario"));
+                user.setNombre(rs.getString("nombre"));
+                registro.setUsuario(user);
 
                 listreg.add(registro);
             }
