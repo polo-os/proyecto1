@@ -104,6 +104,7 @@ public class Formulario extends JFrame {
     private JButton atrasbuttonAJ;
 
 
+
     //Metodos
     public Formulario() {
 
@@ -215,7 +216,6 @@ public class Formulario extends JFrame {
                 actualizarRk();
             }
         });
-
         datosUsuarioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -237,7 +237,16 @@ public class Formulario extends JFrame {
                 calcularmci();
             }
         });
+        filtrarButtonPP.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtrarButtonPP();
+            }
+        });
     }
+
+
+
 
 
 
@@ -253,10 +262,7 @@ public class Formulario extends JFrame {
         this.kgRu.setText("");
         this.passwordRU.setText("");
         this.passworconfRU.setText("");
-
-
     }
-
 
     //Iniciar
     public void inicioBottonin(){
@@ -288,27 +294,24 @@ public class Formulario extends JFrame {
             this.usuario.setAltura(Float.parseFloat(altRU.getText()));
             this.usuario.setPassword(passwordRU.getText());
 
-            if (this.usuario.busUser()) {
-                JOptionPane.showMessageDialog(null, " Error El Usuario ya existe");
-            } else {
-                if (passworconfRU.getText().equals(this.usuario.getPassword())) {
-                    if (this.usuario.insertarRegistroBD()) {
+            if (passworconfRU.getText().equals(this.usuario.getPassword())) {
+                if (this.usuario.insertarRegistroBD()) {
 
-                        // iniciar sesión automáticamente
-                        this.usuario.inicioSecion(
-                                userRU.getText(),
-                                passwordRU.getText()
-                        );
+                    // iniciar sesión automáticamente
+                    this.usuario.inicioSecion(
+                            userRU.getText(),
+                            passwordRU.getText()
+                    );
 
-                        RegistroPeso.setVisible(true);
-                        RegistroRU.setVisible(false);
+                    RegistroPeso.setVisible(true);
+                    RegistroRU.setVisible(false);
 
-                    } else {
-                        JOptionPane.showMessageDialog(null, " Error al Crear el Usuario" + "\n Posible Error en la conexion");
-                    }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Error contraseña diferente a la ingresada anterirormente");
+                        JOptionPane.showMessageDialog(null, " Error al Crear el Usuario" + "\n Posible Error en la conexion");
                 }
+            }
+            else {
+                JOptionPane.showMessageDialog(null,"Error contraseña diferente a la ingresada anterirormente");
             }
         }
         catch (Exception e){
@@ -374,6 +377,42 @@ public class Formulario extends JFrame {
         }
     }
 
+    public void mostrartablaPPfiltro(List<RegistroLevantamiento> listReg) {
+
+        //Datos de la tabla
+        Object[][] filaDatos = new Object[1][5];
+        Object[] nombreColumnas = {"id", "Ejercicio", "Grupo Muscular", "Peso", "Repeticiones"};
+
+        DefaultTableModel modeloTabla = new DefaultTableModel();
+
+
+        //ASIGNAR MODELO DE LA TABLA A LA INTERFAZ GRAFICA
+        modeloTabla.setColumnIdentifiers(nombreColumnas);
+
+        this.table2PP.setModel(modeloTabla);
+        table2PP.getColumnModel().getColumn(0).setMinWidth(0);
+        table2PP.getColumnModel().getColumn(0).setMaxWidth(0);
+        table2PP.getColumnModel().getColumn(0).setPreferredWidth(0);
+
+        //Fuente para el encabezado de la tabla
+
+        JTableHeader tableHeader = this.table1RE.getTableHeader();
+        tableHeader.setBackground(Color.ORANGE);
+        tableHeader.setForeground(Color.MAGENTA);
+        tableHeader.setFont(new Font("Impact", Font.ITALIC, 14));
+
+        for (RegistroLevantamiento registroLevantamiento : listReg) {
+            filaDatos[0][0] = registroLevantamiento.getIdRegistro();
+            filaDatos[0][1] = registroLevantamiento.getEjercicio().getNombreEjercicio();
+            filaDatos[0][2] = registroLevantamiento.getEjercicio().getGrupoMuscular();
+            filaDatos[0][3] = registroLevantamiento.getPesoLevantado();
+            filaDatos[0][4] = registroLevantamiento.getRepeticiones();
+            modeloTabla.addRow(filaDatos[0]);
+
+
+        }
+    }
+
 
     //mostrar tabla
     public void mostrartablaRE(){
@@ -411,7 +450,7 @@ public class Formulario extends JFrame {
     }
 
     public   void seleccionarButton(){
-        int filaselect =table1RE.getSelectedRow();
+      int filaselect =table1RE.getSelectedRow();
         System.out.println("Fila select: "+filaselect);
 
         if(filaselect!=-1){
@@ -420,8 +459,8 @@ public class Formulario extends JFrame {
             grMusculRE.setSelectedItem(model.getValueAt(filaselect,1).toString());
             pesoRE.setText(model.getValueAt(filaselect,2).toString());
             repeticionesRE.setText(model.getValueAt(filaselect,3).toString());
-            eliminarButtonRE.setEnabled(false);
-            actualizarButtonRE.setEnabled(true);
+          eliminarButtonRE.setEnabled(false);
+          actualizarButtonRE.setEnabled(true);
 
 
 
@@ -554,9 +593,30 @@ public class Formulario extends JFrame {
     }
 
     public void calcularmci(){
-        float Imc = (float) (usuario.getPeso()/Math.pow(usuario.getAltura(),2));
-        imcPP.setText(String.format("%.2f", Imc));
+       float Imc = (float) (usuario.getPeso()/Math.pow(usuario.getAltura(),2));
+       imcPP.setText(String.format("%.2f", Imc));
+        System.out.println("Peso: "+usuario.getPeso());
+        System.out.println("Altura: "+usuario.getAltura());
     }
+
+
+    public void filtrarButtonPP(){
+
+        // obtener grupo muscular
+        String grmuscul =
+                filtrarcomboBoxPP
+                        .getSelectedItem()
+                        .toString();
+
+        // llamar filtro
+        List<RegistroLevantamiento> listReg =
+                registroLevantamiento.filtrarGrupoMuscular(grmuscul);
+
+        // mostrar tabla
+        mostrartablaPPfiltro(listReg);
+
+    }
+
 
 
 
@@ -619,6 +679,7 @@ public class Formulario extends JFrame {
             }
         }
 
+
         //mostrar puesto
         puestoRK.setText(String.valueOf(puestoUser));
     }
@@ -659,4 +720,8 @@ public class Formulario extends JFrame {
 
 
     }
+
+
 }
+
+

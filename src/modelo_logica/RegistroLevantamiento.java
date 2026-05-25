@@ -275,4 +275,107 @@ public class RegistroLevantamiento {
         }
         return listreg;
     }
+    public List<RegistroLevantamiento> filtrarGrupoMuscular(
+            String grupoMuscular){
+
+        List<RegistroLevantamiento> listreg =
+                new ArrayList<>();
+
+        this.conexionBD = new ConexionBD();
+
+        String sql =
+                "SELECT " +
+                        "Registro_Levantamiento.id_usuario, " +
+                        "nombre, " +
+                        "nombre_ejercicio, " +
+                        "grupo_muscular, " +
+                        "repeticiones, " +
+                        "Registro_Levantamiento.peso " +
+                        "FROM Registro_Levantamiento " +
+                        "INNER JOIN Usuario USING(id_usuario) " +
+                        "INNER JOIN Ejercicio USING(id_ejercicio) " +
+                        "WHERE grupo_muscular = '" +
+                        grupoMuscular +
+                        "' " +
+                        "ORDER BY Registro_Levantamiento.peso DESC;";
+
+        try{
+
+            ResultSet rs =
+                    this.conexionBD.consultaBD(sql);
+
+            RegistroLevantamiento registro;
+            Ejercicio ejer;
+            Usuario user;
+
+            while(rs.next()){
+
+                ejer = new Ejercicio();
+
+                ejer.setNombreEjercicio(
+                        rs.getString(
+                                "nombre_ejercicio"
+                        )
+                );
+
+                ejer.setGrupoMuscular(
+                        rs.getString(
+                                "grupo_muscular"
+                        )
+                );
+
+                registro =
+                        new RegistroLevantamiento();
+
+                registro.setEjercicio(ejer);
+
+                registro.setRepeticiones(
+                        rs.getInt(
+                                "repeticiones"
+                        )
+                );
+
+                registro.setPesoLevantado(
+                        rs.getInt(
+                                "peso"
+                        )
+                );
+
+                user = new Usuario();
+
+                user.setId_usuario(
+                        rs.getInt(
+                                "id_usuario"
+                        )
+                );
+
+                user.setNombre(
+                        rs.getString(
+                                "nombre"
+                        )
+                );
+
+                registro.setUsuario(user);
+
+                listreg.add(registro);
+            }
+
+        }catch(Exception e){
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error al filtrar ejercicios\n"+
+                            "Tipo de error: "+
+                            e.getMessage()
+            );
+
+        }finally{
+
+            this.conexionBD.cerrarConexion();
+
+        }
+
+        return listreg;
+    }
+
 }
