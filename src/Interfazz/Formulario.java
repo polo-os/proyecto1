@@ -71,12 +71,12 @@ public class Formulario extends JFrame {
     private JPanel pagPrincipal;
     private JTabbedPane tabbedPane1;
     private JTextField UserPP;
-    private JTextField mciPP;
+    private JTextField imcPP;
     private JComboBox filtrarcomboBoxPP;
     private JTable table2PP;
     private JLabel paginaPrincipalLabelPP;
     private JLabel userLabelPP;
-    private JLabel mciLabelPP;
+    private JLabel imcLabel;
     private JLabel filPorLabelPP;
     private JButton acPesoButtonPP;
     private JButton filtrarButtonPP;
@@ -92,6 +92,16 @@ public class Formulario extends JFrame {
     private JButton actualizarButtonRK;
     private JLabel puestoLabelRK;
     private JLabel filPorLabelRK;
+    private JButton seleccionarButton;
+    private JPanel Ajustes;
+    private JLabel ajustesLabelAJ;
+    private JLabel pesoLabelAJ;
+    private JLabel alturaLabelAJ;
+    private JTextField PesoAJ;
+    private JTextField AltAJ;
+    private JButton actualizarButtonAJ;
+    private JButton datosUsuarioButton;
+    private JButton atrasbuttonAJ;
 
 
     //Metodos
@@ -123,9 +133,6 @@ public class Formulario extends JFrame {
 
         AutoCompleteDecorator.decorate(filtrarcomboBoxPP);
 
-        filPcomboBox1RK.setModel(jComboBox2.getModel());
-
-        AutoCompleteDecorator.decorate(filPcomboBox1RK);
 
         //registrarse
         RegistrarseButtonin.addActionListener(new ActionListener() {
@@ -189,22 +196,7 @@ public class Formulario extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 continuarButtonRE();
             }
-
         });
-
-        filtrarButtonRK.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                FiltrarButon();
-            }
-        });
-        actualizarButtonRK.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                actualizarRk();
-            }
-        });
-
         seleccionarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -224,6 +216,27 @@ public class Formulario extends JFrame {
             }
         });
 
+        datosUsuarioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DatosUser();
+            }
+        });
+
+        atrasbuttonAJ.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AtrasAj();
+            }
+        });
+
+        actualizarButtonAJ.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ActualizarAJ();
+                calcularmci();
+            }
+        });
     }
 
 
@@ -234,8 +247,16 @@ public class Formulario extends JFrame {
     public void irRegistrarButton(){
         InicioSesion.setVisible(false);
         RegistroRU.setVisible(true);
+        this.userRU.setText("");
+        this.edadRU.setValue(0);
+        this.altRU.setText("");
+        this.kgRu.setText("");
+        this.passwordRU.setText("");
+        this.passworconfRU.setText("");
+
 
     }
+
 
     //Iniciar
     public void inicioBottonin(){
@@ -245,6 +266,7 @@ public class Formulario extends JFrame {
             pagPrincipal.setVisible(true);
             UserPP.setText(userin.getText());
             mostrartablaPP();
+            calcularmci();
         }
         else {
             userin.setText("");
@@ -266,24 +288,27 @@ public class Formulario extends JFrame {
             this.usuario.setAltura(Float.parseFloat(altRU.getText()));
             this.usuario.setPassword(passwordRU.getText());
 
-            if (passworconfRU.getText().equals(this.usuario.getPassword())) {
-                if (this.usuario.insertarRegistroBD()) {
+            if (this.usuario.busUser()) {
+                JOptionPane.showMessageDialog(null, " Error El Usuario ya existe");
+            } else {
+                if (passworconfRU.getText().equals(this.usuario.getPassword())) {
+                    if (this.usuario.insertarRegistroBD()) {
 
-                    // iniciar sesión automáticamente
-                    this.usuario.inicioSecion(
-                            userRU.getText(),
-                            passwordRU.getText()
-                    );
+                        // iniciar sesión automáticamente
+                        this.usuario.inicioSecion(
+                                userRU.getText(),
+                                passwordRU.getText()
+                        );
 
-                    RegistroPeso.setVisible(true);
-                    RegistroRU.setVisible(false);
+                        RegistroPeso.setVisible(true);
+                        RegistroRU.setVisible(false);
 
-                } else {
+                    } else {
                         JOptionPane.showMessageDialog(null, " Error al Crear el Usuario" + "\n Posible Error en la conexion");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error contraseña diferente a la ingresada anterirormente");
                 }
-            }
-            else {
-                JOptionPane.showMessageDialog(null,"Error contraseña diferente a la ingresada anterirormente");
             }
         }
         catch (Exception e){
@@ -297,7 +322,13 @@ public class Formulario extends JFrame {
     public void acPesoButtonPP(){
         pagPrincipal.setVisible(false);
         RegistroPeso.setVisible(true);
+        actualizarButtonRE.setEnabled(false);
         mostrartablaRE();
+        seleccionarButton.setEnabled(true);
+        eliminarButtonRE.setEnabled(true);
+        continuarButtonRE.setEnabled(true);
+
+
     }
 
 
@@ -312,14 +343,16 @@ public class Formulario extends JFrame {
     public void mostrartablaPP(){
         this.registroLevantamiento = new RegistroLevantamiento();
         //Datos de la tabla
-        Object[][] filaDatos= new Object[1][4];
-        Object[] nombreColumnas={"Ejercicio","Grupo Muscular","Peso","Repeticiones"};
+        Object[][] filaDatos= new Object[1][5];
+        Object[] nombreColumnas={"id","Ejercicio","Grupo Muscular","Peso","Repeticiones"};
         DefaultTableModel modeloTabla =new DefaultTableModel();
 
         //ASIGNAR MODELO DE LA TABLA A LA INTERFAZ GRAFICA
         modeloTabla.setColumnIdentifiers(nombreColumnas);
         this.table2PP.setModel(modeloTabla);
-
+        table2PP.getColumnModel().getColumn(0).setMinWidth(0);
+        table2PP.getColumnModel().getColumn(0).setMaxWidth(0);
+        table2PP.getColumnModel().getColumn(0).setPreferredWidth(0);
         //Fuente para el encabezado de la tabla
         JTableHeader tableHeader=this.table1RE.getTableHeader();
         tableHeader.setBackground(Color.ORANGE);
@@ -330,11 +363,13 @@ public class Formulario extends JFrame {
         List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarRegistroBD(this.usuario.getId_usuario());
 
         for(RegistroLevantamiento registroLevantamiento:listaReg){
-            filaDatos[0][0]=registroLevantamiento.getEjercicio().getNombreEjercicio();
-            filaDatos[0][1]=registroLevantamiento.getEjercicio().getGrupoMuscular();
-            filaDatos[0][2]=registroLevantamiento.getPesoLevantado();
-            filaDatos[0][3]=registroLevantamiento.getRepeticiones();
+            filaDatos[0][0]=registroLevantamiento.getIdRegistro();
+            filaDatos[0][1]=registroLevantamiento.getEjercicio().getNombreEjercicio();
+            filaDatos[0][2]=registroLevantamiento.getEjercicio().getGrupoMuscular();
+            filaDatos[0][3]=registroLevantamiento.getPesoLevantado();
+            filaDatos[0][4]=registroLevantamiento.getRepeticiones();
             modeloTabla.addRow(filaDatos[0]);
+
 
         }
     }
@@ -343,13 +378,16 @@ public class Formulario extends JFrame {
     //mostrar tabla
     public void mostrartablaRE(){
         //Datos de la tabla
-        Object[][] filaDatos= new Object[1][4];
-        Object[] nombreColumnas={"Ejercicio","Grupo Muscular","Peso","Repeticiones"};
+        Object[][] filaDatos= new Object[1][5];
+        Object[] nombreColumnas={"id","Ejercicio","Grupo Muscular","Peso","Repeticiones"};
         DefaultTableModel modeloTabla =new DefaultTableModel();
 
         //ASIGNAR MODELO DE LA TABLA A LA INTERFAZ GRAFICA
         modeloTabla.setColumnIdentifiers(nombreColumnas);
         this.table1RE.setModel(modeloTabla);
+        table1RE.getColumnModel().getColumn(0).setMinWidth(0);
+        table1RE.getColumnModel().getColumn(0).setMaxWidth(0);
+        table1RE.getColumnModel().getColumn(0).setPreferredWidth(0);
 
         //Fuente para el encabezado de la tabla
         JTableHeader tableHeader=this.table1RE.getTableHeader();
@@ -361,14 +399,34 @@ public class Formulario extends JFrame {
         List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarRegistroBD(this.usuario.getId_usuario());
 
         for(RegistroLevantamiento registroLevantamiento:listaReg){
-            filaDatos[0][0]=registroLevantamiento.getEjercicio().getNombreEjercicio();
-            filaDatos[0][1]=registroLevantamiento.getEjercicio().getGrupoMuscular();
-            filaDatos[0][2]=registroLevantamiento.getPesoLevantado();
-            filaDatos[0][3]=registroLevantamiento.getRepeticiones();
+            filaDatos[0][0]=registroLevantamiento.getIdRegistro();
+            filaDatos[0][1]=registroLevantamiento.getEjercicio().getNombreEjercicio();
+            filaDatos[0][2]=registroLevantamiento.getEjercicio().getGrupoMuscular();
+            filaDatos[0][3]=registroLevantamiento.getPesoLevantado();
+            filaDatos[0][4]=registroLevantamiento.getRepeticiones();
             modeloTabla.addRow(filaDatos[0]);
 
+
+        }
+    }
+
+    public   void seleccionarButton(){
+        int filaselect =table1RE.getSelectedRow();
+        System.out.println("Fila select: "+filaselect);
+
+        if(filaselect!=-1){
+            DefaultTableModel model=(DefaultTableModel)(this.table1RE.getModel());
+            ejercicioRE.setSelectedItem(model.getValueAt(filaselect,0).toString());
+            grMusculRE.setSelectedItem(model.getValueAt(filaselect,1).toString());
+            pesoRE.setText(model.getValueAt(filaselect,2).toString());
+            repeticionesRE.setText(model.getValueAt(filaselect,3).toString());
+            eliminarButtonRE.setEnabled(false);
             actualizarButtonRE.setEnabled(true);
-            eliminarButtonRE.setEnabled(true);
+
+
+
+        } else {
+            JOptionPane.showMessageDialog(null,"Seleccione un registro de la tabla ");
         }
     }
 
@@ -405,6 +463,9 @@ public class Formulario extends JFrame {
             else{
                 if(this.registroLevantamiento.insertarRegistroBD()){
                     mostrartablaRE();
+                    eliminarButtonRE.setEnabled(true);
+                    seleccionarButton.setEnabled(true);
+                    continuarButtonRE.setEnabled(true);
                 }
                 else {
                     JOptionPane.showMessageDialog(null,
@@ -418,7 +479,7 @@ public class Formulario extends JFrame {
     }
 
 
-    private void actualizarButtonRE(){
+    public void actualizarButtonRE(){
         try{
 
             this.ejercicio.setNombreEjercicio(ejercicioRE.getSelectedItem().toString());
@@ -430,6 +491,8 @@ public class Formulario extends JFrame {
             if (this.ejercicio.actualizarRegistroBD() && this.registroLevantamiento.actualizarRegistroBD()) {
                 JOptionPane.showMessageDialog(null, "\nProducto actualizado correctamente!!!!");
                 mostrartablaRE();
+                actualizarButtonRE.setEnabled(false);
+                eliminarButtonRE.setEnabled(true);
             } else {
                 JOptionPane.showMessageDialog(null, "ERORRR AL ACTUALIZAR");
             }
@@ -444,21 +507,55 @@ public class Formulario extends JFrame {
 
     }
 
-    private  void eliminarButtonRE(){
-        ejercicioRE.setSelectedIndex(0);
-        grMusculRE.setSelectedIndex(0);
-        repeticionesRE.setText("");
-        pesoRE.setText("");
+    public   void eliminarButtonRE(){
+        int filaSelect = table1RE.getSelectedRow();
+
+
+
+        int id = Integer.parseInt(
+                table1RE.getValueAt(filaSelect,0).toString()
+        );
+
+        boolean conf = JOptionPane.showConfirmDialog(
+                null,
+                "¿Está seguro que quiere eliminar este registro?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+
+        if(conf) {
+            this.registroLevantamiento.setIdRegistro(id);
+            if (this.registroLevantamiento.eliminarRegistroBD()) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Registro eliminado correctamente"
+                );
+                mostrartablaRE();
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Error al eliminar"
+                );
+            }
+        }
     }
 
-    private void continuarButtonRE(){
+    public void continuarButtonRE(){
         pagPrincipal.setVisible(true);
         RegistroPeso.setVisible(false);
+        mostrartablaPP();
+        calcularmci();
     }
 
     public void cerrarSesionButtonPP(){
         pagPrincipal.setVisible(false);
         InicioSesion.setVisible(true);
+    }
+
+    public void calcularmci(){
+        float Imc = (float) (usuario.getPeso()/Math.pow(usuario.getAltura(),2));
+        imcPP.setText(String.format("%.2f", Imc));
     }
 
 
@@ -531,13 +628,35 @@ public class Formulario extends JFrame {
 
     }
 
-    public void actualizarRk(){
-        FiltrarButon();
-
+    public void DatosUser(){
+        PesoAJ.setText(String.valueOf(usuario.getPeso()));
+        AltAJ.setText(String.valueOf(usuario.getAltura()));
+        Ajustes.setVisible(true);
+        pagPrincipal.setVisible(false);
     }
 
+    public void AtrasAj(){
+        Ajustes.setVisible(false);
+        pagPrincipal.setVisible(true);
+    }
+
+    public void ActualizarAJ() {
+
+        try {
+            this.usuario.setPeso(Integer.parseInt(PesoAJ.getText()));
+            this.usuario.setAltura(Float.parseFloat(AltAJ.getText()));
+
+            if (this.usuario.actualizarRegistroBD()) {
+                JOptionPane.showMessageDialog(null, "\nDatos Actualizado correctamente....!!!\n");
+            } else {
+                JOptionPane.showMessageDialog(null, "ERROR AL ACTUALIZAR");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "\nVerifique las cajas de texto que correspondan a valores numericos....!!!!\n " +
+                            "\n Tipo de Error :" + e.getMessage());
+        }
 
 
+    }
 }
-
-

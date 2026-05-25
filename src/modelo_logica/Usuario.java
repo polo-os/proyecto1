@@ -3,7 +3,6 @@ package modelo_logica;
 import Conexion_bd.ConexionBD;
 
 import javax.swing.*;
-import java.sql.ClientInfoStatus;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -169,8 +168,13 @@ public class Usuario {
 
         this.conexionBD = new ConexionBD();
 
-        String sql = "UPDATE Usuario SET nombre ='"+this.nombre+"', edad = "+
-                this.edad+", altura = "+this.altura+", peso ="+this.peso+", password = "+this.password+";";
+        String sql = "UPDATE Usuario SET peso = "
+                + this.getPeso()
+                + ", altura = "
+                + this.getAltura()
+                + " WHERE id_usuario = "
+                + this.getId_usuario()
+                + ";";
 
         if(this.conexionBD.setAutoCommitBD(false)){
             if(this.conexionBD.insertarBD(sql)){
@@ -266,9 +270,40 @@ public class Usuario {
 
     }
 
+    public boolean busUser(){
+
+        boolean conf;
+
+        this.conexionBD = new ConexionBD();
+
+        String sql = "SELECT * FROM Usuario WHERE nombre = '"+
+                this.nombre+"';";
 
 
+        try{
+            ResultSet rs = this.conexionBD.consultaBD(sql);
 
+            if(rs.next()){
+                conf = true;
+            }else{
+                conf = false;
+            }
+        }
+        catch (Exception e){
+
+            JOptionPane.showMessageDialog(null,
+                    "Error al buscar usuario\n"+
+                            "Tipo error: "+e.getMessage());
+
+            conf = false;
+
+        }
+        finally {
+            this.conexionBD.cerrarConexion();
+        }
+
+        return conf;
+    }
 
 }
 
