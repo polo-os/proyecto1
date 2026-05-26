@@ -455,10 +455,11 @@ public class Formulario extends JFrame {
 
         if(filaselect!=-1){
             DefaultTableModel model=(DefaultTableModel)(this.table1RE.getModel());
-            ejercicioRE.setSelectedItem(model.getValueAt(filaselect,0).toString());
-            grMusculRE.setSelectedItem(model.getValueAt(filaselect,1).toString());
-            pesoRE.setText(model.getValueAt(filaselect,2).toString());
-            repeticionesRE.setText(model.getValueAt(filaselect,3).toString());
+
+            ejercicioRE.setSelectedItem(model.getValueAt(filaselect,1).toString());
+            grMusculRE.setSelectedItem(model.getValueAt(filaselect,2).toString());
+            pesoRE.setText(model.getValueAt(filaselect,3).toString());
+            repeticionesRE.setText(model.getValueAt(filaselect,4).toString());
           eliminarButtonRE.setEnabled(false);
           actualizarButtonRE.setEnabled(true);
 
@@ -602,6 +603,7 @@ public class Formulario extends JFrame {
 
     public void filtrarButtonPP(){
 
+        this.registroLevantamiento.setUsuario(this.usuario);
         // obtener grupo muscular
         String grmuscul =
                 filtrarcomboBoxPP

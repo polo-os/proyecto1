@@ -5,6 +5,7 @@ import java.sql.*;
 
 public class ConexionBD {
 
+
         //Atributos/Propiedades/Caracteristicas
         private String url; //ruta que realiza la conexion con la DB
         private Connection connection;  // objeto que hace la conexion a la BD

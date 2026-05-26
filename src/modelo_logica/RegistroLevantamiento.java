@@ -145,7 +145,7 @@ public class RegistroLevantamiento {
         //sentencia sql
         String sql="UPDATE Registro_Levantamiento set peso="
                 +this.getPesoLevantado()+",repeticiones="+this.getRepeticiones()+
-                "WHERE id_registro="+this.getIdRegistro()+";";
+                " WHERE id_registro="+this.getIdRegistro()+";";
         if (this.conexionBD.setAutoCommitBD(false)){
             if (this.conexionBD.actualizarBD(sql)){
                 this.conexionBD.commitBD();
@@ -284,20 +284,11 @@ public class RegistroLevantamiento {
         this.conexionBD = new ConexionBD();
 
         String sql =
-                "SELECT " +
-                        "Registro_Levantamiento.id_usuario, " +
-                        "nombre, " +
-                        "nombre_ejercicio, " +
-                        "grupo_muscular, " +
-                        "repeticiones, " +
-                        "Registro_Levantamiento.peso " +
+                "SELECT nombre_ejercicio, grupo_muscular, peso, repeticiones " +
                         "FROM Registro_Levantamiento " +
-                        "INNER JOIN Usuario USING(id_usuario) " +
                         "INNER JOIN Ejercicio USING(id_ejercicio) " +
-                        "WHERE grupo_muscular = '" +
-                        grupoMuscular +
-                        "' " +
-                        "ORDER BY Registro_Levantamiento.peso DESC;";
+                        "WHERE id_usuario = " + this.usuario.getId_usuario() +
+                        " AND grupo_muscular = '" + grupoMuscular + "';";
 
         try{
 
@@ -306,56 +297,30 @@ public class RegistroLevantamiento {
 
             RegistroLevantamiento registro;
             Ejercicio ejer;
-            Usuario user;
 
             while(rs.next()){
 
                 ejer = new Ejercicio();
 
                 ejer.setNombreEjercicio(
-                        rs.getString(
-                                "nombre_ejercicio"
-                        )
+                        rs.getString("nombre_ejercicio")
                 );
 
                 ejer.setGrupoMuscular(
-                        rs.getString(
-                                "grupo_muscular"
-                        )
+                        rs.getString("grupo_muscular")
                 );
 
-                registro =
-                        new RegistroLevantamiento();
+                registro = new RegistroLevantamiento();
 
                 registro.setEjercicio(ejer);
 
                 registro.setRepeticiones(
-                        rs.getInt(
-                                "repeticiones"
-                        )
+                        rs.getInt("repeticiones")
                 );
 
                 registro.setPesoLevantado(
-                        rs.getInt(
-                                "peso"
-                        )
+                        rs.getInt("peso")
                 );
-
-                user = new Usuario();
-
-                user.setId_usuario(
-                        rs.getInt(
-                                "id_usuario"
-                        )
-                );
-
-                user.setNombre(
-                        rs.getString(
-                                "nombre"
-                        )
-                );
-
-                registro.setUsuario(user);
 
                 listreg.add(registro);
             }

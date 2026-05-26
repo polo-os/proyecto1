@@ -130,10 +130,10 @@ public class Ejercicio {
         this.conexionBD = new ConexionBD();
 
         String sql = "UPDATE Ejercicio SET nombre_ejercicio ='"+this.nombreEjercicio+"', grupo_muscular = '"+
-                this.grupoMuscular+";";
+                this.grupoMuscular+"';";
 
         if(this.conexionBD.setAutoCommitBD(false)){
-            if(this.conexionBD.insertarBD(sql)){
+            if(this.conexionBD.actualizarBD(sql)){
                 this.conexionBD.commitBD();
                 this.conexionBD.cerrarConexion();
                 conf = true;
@@ -161,7 +161,7 @@ public class Ejercicio {
                 this.idEjercicio + ";";
 
         if(this.conexionBD.setAutoCommitBD(false)){
-            if(this.conexionBD.insertarBD(sql)){
+            if(this.conexionBD.borrarBD(sql)){
                 this.conexionBD.commitBD();
                 this.conexionBD.cerrarConexion();
                 conf = true;

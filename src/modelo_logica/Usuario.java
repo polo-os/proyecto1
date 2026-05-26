@@ -177,7 +177,7 @@ public class Usuario {
                 + ";";
 
         if(this.conexionBD.setAutoCommitBD(false)){
-            if(this.conexionBD.insertarBD(sql)){
+            if(this.conexionBD.actualizarBD(sql)){
                 this.conexionBD.commitBD();
                 this.conexionBD.cerrarConexion();
                 conf = true;
@@ -201,7 +201,7 @@ public class Usuario {
 
         this.conexionBD = new ConexionBD();
 
-        String sql = "DELETE FROM Usuario WHERE id = " +
+        String sql = "DELETE FROM Usuario WHERE id_usuario = " +
                 this.id_usuario + ";";
 
         if(this.conexionBD.setAutoCommitBD(false)){
