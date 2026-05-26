@@ -273,6 +273,8 @@ public class Formulario extends JFrame {
             UserPP.setText(userin.getText());
             mostrartablaPP();
             calcularmci();
+            userin.setText("");
+            passwordin.setText("");
         }
         else {
             userin.setText("");
@@ -301,10 +303,14 @@ public class Formulario extends JFrame {
                     this.usuario.inicioSecion(
                             userRU.getText(),
                             passwordRU.getText()
+
                     );
 
                     RegistroPeso.setVisible(true);
                     RegistroRU.setVisible(false);
+                    UserPP.setText(userRU.getText());
+                    userin.setText("");
+                    passwordin.setText("");
 
                 } else {
                         JOptionPane.showMessageDialog(null, " Error al Crear el Usuario" + "\n Posible Error en la conexion");
