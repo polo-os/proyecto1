@@ -596,8 +596,6 @@ public class Formulario extends JFrame {
     public void calcularmci(){
        float Imc = (float) (usuario.getPeso()/Math.pow(usuario.getAltura(),2));
        imcPP.setText(String.format("%.2f", Imc));
-        System.out.println("Peso: "+usuario.getPeso());
-        System.out.println("Altura: "+usuario.getAltura());
     }
 
 
