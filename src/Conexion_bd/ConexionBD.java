@@ -3,7 +3,7 @@ package Conexion_bd;
 import javax.swing.*;
 import java.sql.*;
 
-public class ConexionBD {
+public class ConexionBD implements CRUD {
 
 
         //Atributos/Propiedades/Caracteristicas
@@ -74,7 +74,7 @@ public class ConexionBD {
         }
 
         //CRUD Read = leer o agregar registros a la BD
-        public ResultSet consultaBD(String sentenciaSQL){
+        public ResultSet consultarBD(String sentenciaSQL){
 
             try {
                 //cambia la segunda linea

@@ -135,7 +135,7 @@ public class Usuario {
         String sql = "SELECT * FROM Usuario; ";
 
         try{
-            ResultSet rs = this.conexionBD.consultaBD(sql);
+            ResultSet rs = this.conexionBD.consultarBD(sql);
             Usuario user;
 
             while(rs.next()){
@@ -281,7 +281,7 @@ public class Usuario {
 
 
         try{
-            ResultSet rs = this.conexionBD.consultaBD(sql);
+            ResultSet rs = this.conexionBD.consultarBD(sql);
 
             if(rs.next()){
                 conf = true;

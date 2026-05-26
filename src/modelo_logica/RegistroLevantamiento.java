@@ -114,7 +114,7 @@ public class RegistroLevantamiento {
                 "WHERE id_usuario = "+idusuario+";";
         try {
 
-            ResultSet rs=this.conexionBD.consultaBD(sql);
+            ResultSet rs=this.conexionBD.consultarBD(sql);
             RegistroLevantamiento registro;
             Ejercicio ejer;
             while (rs.next()){
@@ -197,7 +197,7 @@ public class RegistroLevantamiento {
                 " AND id_ejercicio = "+this.ejercicio.getIdEjercicio()+";";
 
         try{
-            ResultSet rs = this.conexionBD.consultaBD(sql);
+            ResultSet rs = this.conexionBD.consultarBD(sql);
 
             if(rs.next()){
                 ent = true;
@@ -239,7 +239,7 @@ public class RegistroLevantamiento {
 
         try{
 
-            ResultSet rs = this.conexionBD.consultaBD(sql);
+            ResultSet rs = this.conexionBD.consultarBD(sql);
             RegistroLevantamiento registro;
             Ejercicio ejer;
             Usuario user;
@@ -293,7 +293,7 @@ public class RegistroLevantamiento {
         try{
 
             ResultSet rs =
-                     this.conexionBD.consultaBD(sql);
+                     this.conexionBD.consultarBD(sql);
 
             RegistroLevantamiento registro;
             Ejercicio ejer;

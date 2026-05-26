@@ -99,7 +99,7 @@ public class Ejercicio {
         String sql = "SELECT * FROM Ejercicio; ";
 
         try{
-            ResultSet rs = this.conexionBD.consultaBD(sql);
+            ResultSet rs = this.conexionBD.consultarBD(sql);
             Ejercicio ejer;
 
             while(rs.next()){
@@ -191,7 +191,7 @@ public class Ejercicio {
 
 
         try{
-            ResultSet rs = this.conexionBD.consultaBD(sql);
+            ResultSet rs = this.conexionBD.consultarBD(sql);
 
             if(rs.next()){
                 this.idEjercicio = rs.getInt("id_ejercicio");
