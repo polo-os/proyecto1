@@ -293,7 +293,7 @@ public class RegistroLevantamiento {
         try{
 
             ResultSet rs =
-                    this.conexionBD.consultaBD(sql);
+                     this.conexionBD.consultaBD(sql);
 
             RegistroLevantamiento registro;
             Ejercicio ejer;
