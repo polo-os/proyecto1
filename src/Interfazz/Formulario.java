@@ -102,7 +102,12 @@ public class Formulario extends JFrame {
     private JButton actualizarButtonAJ;
     private JButton datosUsuarioButton;
     private JButton atrasbuttonAJ;
-
+    private JTextField edadAJ;
+    private JTextField UserAJ;
+    private JTextField PasswordAJ;
+    private JLabel UserLabelAJ;
+    private JLabel edadLabelAJ;
+    private JLabel PasswordLabelAJ;
 
 
     //Metodos
@@ -468,6 +473,7 @@ public class Formulario extends JFrame {
             repeticionesRE.setText(model.getValueAt(filaselect,4).toString());
           eliminarButtonRE.setEnabled(false);
           actualizarButtonRE.setEnabled(true);
+          agregarButtonRE.setEnabled(false);
 
 
 
@@ -525,33 +531,57 @@ public class Formulario extends JFrame {
     }
 
 
-    public void actualizarButtonRE(){
-        try{
+    public void actualizarButtonRE() {
 
-            this.ejercicio.setNombreEjercicio(ejercicioRE.getSelectedItem().toString());
-            this.ejercicio.setGrupoMuscular(grMusculRE.getSelectedItem().toString());
-            this.registroLevantamiento.setEjercicio(this.ejercicio);
-            this.registroLevantamiento.setRepeticiones(Integer.parseInt(repeticionesRE.getText()));
-            this.registroLevantamiento.setPesoLevantado(Integer.parseInt(pesoRE.getText()));
-            //Actualizar BD
-            if (this.ejercicio.actualizarRegistroBD() && this.registroLevantamiento.actualizarRegistroBD()) {
-                JOptionPane.showMessageDialog(null, "\nProducto actualizado correctamente!!!!");
-                mostrartablaRE();
-                actualizarButtonRE.setEnabled(false);
-                eliminarButtonRE.setEnabled(true);
-            } else {
-                JOptionPane.showMessageDialog(null, "ERORRR AL ACTUALIZAR");
+            try {
+                // Obtener fila seleccionada
+                int filaSelect = table1RE.getSelectedRow();
+
+                if (filaSelect == -1) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Seleccione un registro"
+                    );
+                    return;
+                }
+
+                // Obtener id de la tabla
+                int idRegistro = Integer.parseInt(table1RE.getValueAt(filaSelect, 0).toString());
+
+                // Asignar datos nuevos
+                this.ejercicio.setNombreEjercicio(ejercicioRE.getSelectedItem().toString());
+                this.ejercicio.setGrupoMuscular(grMusculRE.getSelectedItem().toString());
+                this.registroLevantamiento.setIdRegistro(idRegistro);
+                this.registroLevantamiento.setEjercicio(this.ejercicio);
+                this.registroLevantamiento.setPesoLevantado(Integer.parseInt(pesoRE.getText()));
+                this.registroLevantamiento.setRepeticiones(Integer.parseInt(repeticionesRE.getText()));
+
+                // Actualizar BD
+                if (this.registroLevantamiento.actualizarRegistroBD()) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Registro actualizado correctamente"
+                    );
+                    mostrartablaRE();
+                    actualizarButtonRE.setEnabled(false);
+                    eliminarButtonRE.setEnabled(true);
+                    agregarButtonRE.setEnabled(true);
+
+                } else {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Error al actualizar"
+                    );
+                }
+            } catch (Exception e) {
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Error:\n" + e.getMessage()
+                );
             }
-
-
-
-        } catch (Exception e){
-            JOptionPane.showMessageDialog(null,"Verifique que las cajas de texto correspondan" +
-                    "a valores numericos \n tipo de error: "+e.getMessage());
         }
 
-
-    }
 
     public   void eliminarButtonRE(){
         int filaSelect = table1RE.getSelectedRow();
@@ -698,6 +728,9 @@ public class Formulario extends JFrame {
     public void DatosUser(){
         PesoAJ.setText(String.valueOf(usuario.getPeso()));
         AltAJ.setText(String.valueOf(usuario.getAltura()));
+        UserAJ.setText(String.valueOf(usuario.getNombre()));
+        edadAJ.setText(String.valueOf(usuario.getEdad()));
+        PasswordAJ.setText(usuario.getPassword());
         Ajustes.setVisible(true);
         pagPrincipal.setVisible(false);
     }
@@ -712,6 +745,9 @@ public class Formulario extends JFrame {
         try {
             this.usuario.setPeso(Integer.parseInt(PesoAJ.getText()));
             this.usuario.setAltura(Float.parseFloat(AltAJ.getText()));
+            this.usuario.setNombre(UserAJ.getText());
+            this.usuario.setEdad(Integer.parseInt(edadAJ.getText()));
+            this.usuario.setPassword(PasswordAJ.getText());
 
             if (this.usuario.actualizarRegistroBD()) {
                 JOptionPane.showMessageDialog(null, "\nDatos Actualizado correctamente....!!!\n");

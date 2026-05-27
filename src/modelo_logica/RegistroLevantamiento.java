@@ -142,6 +142,8 @@ public class RegistroLevantamiento {
 
     public boolean actualizarRegistroBD(){
         boolean conf;
+        this.conexionBD = new ConexionBD();
+
         //sentencia sql
         String sql="UPDATE Registro_Levantamiento set peso="
                 +this.getPesoLevantado()+",repeticiones="+this.getRepeticiones()+
@@ -192,9 +194,10 @@ public class RegistroLevantamiento {
 
         this.conexionBD = new ConexionBD();
 
-        String sql = "SELECT * FROM Registro_Levantamiento "+
-                "WHERE id_usuario = "+this.usuario.getId_usuario()+
-                " AND id_ejercicio = "+this.ejercicio.getIdEjercicio()+";";
+        String sql =  "SELECT * FROM Ejercicio " +
+                "WHERE TRIM(LOWER(nombre_ejercicio)) = TRIM(LOWER('"
+                + this.ejercicio.getNombreEjercicio()+ "'));";
+
 
         try{
             ResultSet rs = this.conexionBD.consultarBD(sql);

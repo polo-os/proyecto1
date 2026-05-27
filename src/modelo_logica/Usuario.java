@@ -168,13 +168,13 @@ public class Usuario {
 
         this.conexionBD = new ConexionBD();
 
-        String sql = "UPDATE Usuario SET peso = "
-                + this.getPeso()
-                + ", altura = "
-                + this.getAltura()
-                + " WHERE id_usuario = "
-                + this.getId_usuario()
-                + ";";
+        String sql =  "UPDATE Usuario SET " +
+                "nombre = '" + this.getNombre() + "', " +
+                "edad = " + this.getEdad() + ", " +
+                "altura = " + this.getAltura() + ", " +
+                "peso = " + this.getPeso() + ", " +
+                "contraseña = '" + this.getPassword() + "' " +
+                "WHERE id_usuario = " + this.getId_usuario() + ";";
 
         if(this.conexionBD.setAutoCommitBD(false)){
             if(this.conexionBD.actualizarBD(sql)){
