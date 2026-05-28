@@ -1,10 +1,14 @@
 package Conexion_bd;
 
 import java.sql.ResultSet;
+import java.util.List;
 
-public interface CRUD {
-    boolean insertarBD(String sentenciaSQL);
-    ResultSet consultarBD(String sentenciaSQL);
-    boolean actualizarBD(String sentenciaSQL);
-    boolean borrarBD(String sentenciaSQL);
+public interface  CRUD {
+    boolean insertarBD();
+    boolean actualizarBD();
+    boolean borrarBD();
+
+
+
+
 }

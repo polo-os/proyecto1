@@ -3,7 +3,7 @@ package Conexion_bd;
 import javax.swing.*;
 import java.sql.*;
 
-public class ConexionBD implements CRUD {
+public class ConexionBD {
 
 
         //Atributos/Propiedades/Caracteristicas
@@ -96,7 +96,6 @@ public class ConexionBD implements CRUD {
         }
 
         //CRUD Update = actualizar o modificar registro de la BD
-
         public boolean actualizarBD(String sentenciaSQL){
             boolean conf;
 
@@ -145,9 +144,9 @@ public class ConexionBD implements CRUD {
             return conf;
         }
 
+
         //Funcion para confirmar o negar el autoGuardado de las sentencias ejecutadas en la BD
         // las variables de tipo bandera es boolean
-
         public boolean setAutoCommitBD(boolean bandera){
             boolean conf;
 
@@ -196,7 +195,6 @@ public class ConexionBD implements CRUD {
         }
 
         //Cerrar la Conexion de la BD Desde un Objeto de la Clase Connection
-
         public void closeConnetion(Connection connection){
 
             if (connection != null){

@@ -1,5 +1,6 @@
 package modelo_logica;
 
+import Conexion_bd.CRUD;
 import Conexion_bd.ConexionBD;
 
 import javax.swing.*;
@@ -7,7 +8,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegistroLevantamiento {
+public class RegistroLevantamiento implements CRUD {
     private  int idRegistro,pesoLevantado,repeticiones;
     //conexion bd
     private ConexionBD conexionBD;
@@ -34,14 +35,6 @@ public class RegistroLevantamiento {
 
     public void setEjercicio(Ejercicio ejercicio) {
         this.ejercicio = ejercicio;
-    }
-
-    public ConexionBD getConexionBD() {
-        return conexionBD;
-    }
-
-    public void setConexionBD(ConexionBD conexionBD) {
-        this.conexionBD = conexionBD;
     }
 
     public Usuario getUsuario() {
@@ -77,7 +70,8 @@ public class RegistroLevantamiento {
     }
 
     // INSERTAR
-    public boolean insertarRegistroBD(){
+    @Override
+    public boolean insertarBD(){
         //conexion a la bd
         this.conexionBD=new ConexionBD();
         boolean conf;
@@ -103,7 +97,8 @@ public class RegistroLevantamiento {
     }
 
     //SELECT
-    public List<RegistroLevantamiento>consultarRegistroBD(int idusuario){
+
+    public List<RegistroLevantamiento>consultarBD(int idusuario){
         List<RegistroLevantamiento> listaReg=new ArrayList<>();
 
         this.conexionBD=new ConexionBD();
@@ -140,7 +135,8 @@ public class RegistroLevantamiento {
         return listaReg;
     }
 
-    public boolean actualizarRegistroBD(){
+    @Override
+    public boolean actualizarBD(){
         boolean conf;
         this.conexionBD = new ConexionBD();
 
@@ -165,7 +161,8 @@ public class RegistroLevantamiento {
         return conf;
     }
 
-    public boolean eliminarRegistroBD(){
+    @Override
+    public boolean borrarBD(){
         boolean conf;
         //conexion
         this.conexionBD=new ConexionBD();
@@ -190,35 +187,37 @@ public class RegistroLevantamiento {
     }
 
     public boolean busRegistro(){
-        boolean ent;
+
+        boolean ent = false;
 
         this.conexionBD = new ConexionBD();
 
-        String sql =  "SELECT * FROM Ejercicio " +
-                "WHERE TRIM(LOWER(nombre_ejercicio)) = TRIM(LOWER('"
-                + this.ejercicio.getNombreEjercicio()+ "'));";
-
+        String sql =
+                "SELECT * FROM Registro_Levantamiento " +
+                        "WHERE id_usuario = " + this.usuario.getId_usuario() +
+                        " AND id_ejercicio = " + this.ejercicio.getIdEjercicio() + ";";
 
         try{
+
             ResultSet rs = this.conexionBD.consultarBD(sql);
 
             if(rs.next()){
                 ent = true;
             }
-            else {
-                ent = false;
-            }
         }
-        catch (Exception e){
-            JOptionPane.showMessageDialog(null,
+        catch(Exception e){
+            JOptionPane.showMessageDialog(
+                    null,
                     "Error al buscar registro\n" +
-                            "Tipo de error: " + e.getMessage());
-            ent = false;
+                            "Tipo de error: " + e.getMessage()
+            );
         }
-        finally {
+        finally{
+
             this.conexionBD.cerrarConexion();
+
         }
-        return  ent;
+        return ent;
     }
 
     public List<RegistroLevantamiento> filtrarEjercicio(String nombre_ejercicio){
@@ -278,11 +277,10 @@ public class RegistroLevantamiento {
         }
         return listreg;
     }
-    public List<RegistroLevantamiento> filtrarGrupoMuscular(
-            String grupoMuscular){
 
-        List<RegistroLevantamiento> listreg =
-                new ArrayList<>();
+    public List<RegistroLevantamiento> filtrarGrupoMuscular(String grupoMuscular){
+
+        List<RegistroLevantamiento> listreg = new ArrayList<>();
 
         this.conexionBD = new ConexionBD();
 
@@ -304,26 +302,13 @@ public class RegistroLevantamiento {
             while(rs.next()){
 
                 ejer = new Ejercicio();
-
-                ejer.setNombreEjercicio(
-                        rs.getString("nombre_ejercicio")
-                );
-
-                ejer.setGrupoMuscular(
-                        rs.getString("grupo_muscular")
-                );
+                ejer.setNombreEjercicio(rs.getString("nombre_ejercicio"));
+                ejer.setGrupoMuscular(rs.getString("grupo_muscular"));
 
                 registro = new RegistroLevantamiento();
-
                 registro.setEjercicio(ejer);
-
-                registro.setRepeticiones(
-                        rs.getInt("repeticiones")
-                );
-
-                registro.setPesoLevantado(
-                        rs.getInt("peso")
-                );
+                registro.setRepeticiones(rs.getInt("repeticiones"));
+                registro.setPesoLevantado(rs.getInt("peso"));
 
                 listreg.add(registro);
             }
@@ -334,15 +319,11 @@ public class RegistroLevantamiento {
                     null,
                     "Error al filtrar ejercicios\n"+
                             "Tipo de error: "+
-                            e.getMessage()
-            );
-
-        }finally{
-
-            this.conexionBD.cerrarConexion();
-
+                            e.getMessage());
         }
-
+        finally{
+            this.conexionBD.cerrarConexion();
+        }
         return listreg;
     }
 

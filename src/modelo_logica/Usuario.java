@@ -1,5 +1,6 @@
 package modelo_logica;
 
+import Conexion_bd.CRUD;
 import Conexion_bd.ConexionBD;
 
 import javax.swing.*;
@@ -8,7 +9,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Usuario {
+public class Usuario implements CRUD {
     private int id_usuario;
     private String nombre;
     private int edad;
@@ -98,7 +99,8 @@ public class Usuario {
     }
 
     //CRUD Create
-    public boolean insertarRegistroBD(){
+    @Override
+    public boolean insertarBD(){
         boolean conf;
 
         this.conexionBD = new ConexionBD();
@@ -127,7 +129,8 @@ public class Usuario {
     }
 
     //CRUD READ
-    public List<Usuario> consultarRegistroBD(){
+
+    public List<Usuario> consultarBD(){
         List<Usuario> usuarioList = new ArrayList<>();
 
         this.conexionBD = new ConexionBD();
@@ -163,7 +166,8 @@ public class Usuario {
         return usuarioList;
     }
 
-    public boolean actualizarRegistroBD(){
+    @Override
+    public boolean actualizarBD(){
         boolean conf;
 
         this.conexionBD = new ConexionBD();
@@ -196,35 +200,44 @@ public class Usuario {
 
     }
 
-    public boolean borrarRegistroBD() {
+    @Override
+    public boolean borrarBD() {
         boolean conf;
 
         this.conexionBD = new ConexionBD();
 
-        String sql = "DELETE FROM Usuario WHERE id_usuario = " +
-                this.id_usuario + ";";
+        String sql1 = "DELETE FROM Registro_Levantamiento " +
+                "WHERE id_usuario = " + this.id_usuario + ";";
 
-        if(this.conexionBD.setAutoCommitBD(false)){
-            if(this.conexionBD.insertarBD(sql)){
-                this.conexionBD.commitBD();
-                this.conexionBD.cerrarConexion();
-                conf = true;
-            }
-            else {
-                this.conexionBD.rollbackBD();
-                this.conexionBD.cerrarConexion();
-                conf = false;
-            }
-        }
-        else {
-            this.conexionBD.cerrarConexion();
-            conf = false;
-        }
-        return conf;
+            String sql2 = "DELETE FROM Usuario " +
+                    "WHERE id_usuario = " + this.id_usuario + ";";
 
+            if(this.conexionBD.setAutoCommitBD(false)) {
+                if (this.conexionBD.insertarBD(sql1)) {
+                    if (this.conexionBD.insertarBD(sql2)) {
+                        this.conexionBD.commitBD();
+                        conf = true;
+                    } else {
+                        this.conexionBD.rollbackBD();
+                        this.conexionBD.cerrarConexion();
+                        conf = false;
+                    }
+                }
+                else{
+                        this.conexionBD.rollbackBD();
+                        this.conexionBD.cerrarConexion();
+                        conf = false;
+                    }
+                }
+                else {
+                    this.conexionBD.cerrarConexion();
+                    conf = false;
+                }
+                return conf;
     }
 
-    public boolean inicioSecion(String nombre,String passwordd){
+
+    public boolean inicioSesion(String nombre,String passwordd){
         boolean conf;
 
         try{

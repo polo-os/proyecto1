@@ -1,5 +1,6 @@
 package modelo_logica;
 
+import Conexion_bd.CRUD;
 import Conexion_bd.ConexionBD;
 
 import javax.swing.*;
@@ -7,7 +8,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ejercicio {
+public class Ejercicio implements CRUD{
 
     private int idEjercicio;
     private String nombreEjercicio,grupoMuscular;
@@ -54,16 +55,9 @@ public class Ejercicio {
         this.grupoMuscular = grupoMuscular;
     }
 
-    public ConexionBD getConexionBD() {
-        return conexionBD;
-    }
-
-    public void setConexionBD(ConexionBD conexionBD) {
-        this.conexionBD = conexionBD;
-    }
-
     //CRUD Create
-    public boolean insertarRegistroBD(){
+    @Override
+    public boolean insertarBD(){
         boolean conf;
 
         this.conexionBD = new ConexionBD();
@@ -91,7 +85,7 @@ public class Ejercicio {
     }
 
     //CRUD READ
-    public List<Ejercicio> consultarRegistroBD(){
+    public List<Ejercicio> consultarBD(){
         List<Ejercicio> ejercicioList =new ArrayList<>();
 
         this.conexionBD = new ConexionBD();
@@ -124,7 +118,8 @@ public class Ejercicio {
         return ejercicioList;
     }
 
-    public boolean actualizarRegistroBD(){
+    @Override
+    public boolean actualizarBD(){
         boolean conf;
 
         this.conexionBD = new ConexionBD();
@@ -152,7 +147,8 @@ public class Ejercicio {
 
     }
 
-    public boolean borrarRegistroBD() {
+    @Override
+    public boolean borrarBD() {
         boolean conf;
 
         this.conexionBD = new ConexionBD();

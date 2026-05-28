@@ -108,6 +108,20 @@ public class Formulario extends JFrame {
     private JLabel UserLabelAJ;
     private JLabel edadLabelAJ;
     private JLabel PasswordLabelAJ;
+    private JButton borrarCuentaButtonAJ;
+    private JButton agregarEjercicioRE;
+    private JPanel Ejercicio;
+    private JTextField AgreEjercicioE;
+    private JTextField agreGruMuscularE;
+    private JTable table1E;
+    private JButton AtrasE;
+    private JButton eliminarButton;
+    private JButton actualizarButton;
+    private JButton agregarButton;
+    private JButton seleccionarButton1;
+    private JLabel agregarLabelE;
+    private JLabel agregarEjercicioLabelE;
+    private JLabel agregarGrupoMuscularLabelE;
 
 
     //Metodos
@@ -157,6 +171,7 @@ public class Formulario extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 registrarButtonRU();
+                mostrartablaRE();
             }
         });
 
@@ -215,12 +230,6 @@ public class Formulario extends JFrame {
                 FiltrarButon();
             }
         });
-        actualizarButtonRK.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                actualizarRk();
-            }
-        });
         datosUsuarioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -248,6 +257,24 @@ public class Formulario extends JFrame {
                 filtrarButtonPP();
             }
         });
+        borrarCuentaButtonAJ.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BorrarCuentaAJ();
+            }
+        });
+        agregarEjercicioRE.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AgregarEjerciRE();
+            }
+        });
+        AtrasE.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AtrasE();
+            }
+        });
     }
 
 
@@ -272,7 +299,7 @@ public class Formulario extends JFrame {
     //Iniciar
     public void inicioBottonin(){
 
-        if (usuario.inicioSecion(userin.getText(),passwordin.getText())){
+        if (usuario.inicioSesion(userin.getText(),passwordin.getText())){
             InicioSesion.setVisible(false);
             pagPrincipal.setVisible(true);
             UserPP.setText(userin.getText());
@@ -302,10 +329,10 @@ public class Formulario extends JFrame {
             this.usuario.setPassword(passwordRU.getText());
 
             if (passworconfRU.getText().equals(this.usuario.getPassword())) {
-                if (this.usuario.insertarRegistroBD()) {
+                if (this.usuario.insertarBD()) {
 
                     // iniciar sesión automáticamente
-                    this.usuario.inicioSecion(
+                    this.usuario.inicioSesion(
                             userRU.getText(),
                             passwordRU.getText()
 
@@ -316,6 +343,8 @@ public class Formulario extends JFrame {
                     UserPP.setText(userRU.getText());
                     userin.setText("");
                     passwordin.setText("");
+                    pesoRE.setText("");
+                    repeticionesRE.setText("");
 
                 } else {
                         JOptionPane.showMessageDialog(null, " Error al Crear el Usuario" + "\n Posible Error en la conexion");
@@ -374,7 +403,7 @@ public class Formulario extends JFrame {
         tableHeader.setFont(new Font("Impact", Font.ITALIC,14));
 
 
-        List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarRegistroBD(this.usuario.getId_usuario());
+        List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarBD(this.usuario.getId_usuario());
 
         for(RegistroLevantamiento registroLevantamiento:listaReg){
             filaDatos[0][0]=registroLevantamiento.getIdRegistro();
@@ -446,7 +475,7 @@ public class Formulario extends JFrame {
         tableHeader.setFont(new Font("Impact", Font.ITALIC,14));
 
 
-        List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarRegistroBD(this.usuario.getId_usuario());
+        List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarBD(this.usuario.getId_usuario());
 
         for(RegistroLevantamiento registroLevantamiento:listaReg){
             filaDatos[0][0]=registroLevantamiento.getIdRegistro();
@@ -497,7 +526,7 @@ public class Formulario extends JFrame {
             //ver si hay un ejercicio Repetido en caso de que no crearlo
             if(!this.ejercicio.busEjercico()){
 
-                this.ejercicio.insertarRegistroBD();
+                this.ejercicio.insertarBD();
 
                 this.ejercicio.busEjercico();
             }
@@ -513,7 +542,7 @@ public class Formulario extends JFrame {
                         "Ya tienes registrado este ejercicio");
             }
             else{
-                if(this.registroLevantamiento.insertarRegistroBD()){
+                if(this.registroLevantamiento.insertarBD()){
                     mostrartablaRE();
                     eliminarButtonRE.setEnabled(true);
                     seleccionarButton.setEnabled(true);
@@ -557,7 +586,7 @@ public class Formulario extends JFrame {
                 this.registroLevantamiento.setRepeticiones(Integer.parseInt(repeticionesRE.getText()));
 
                 // Actualizar BD
-                if (this.registroLevantamiento.actualizarRegistroBD()) {
+                if (this.registroLevantamiento.actualizarBD()) {
                     JOptionPane.showMessageDialog(
                             null,
                             "Registro actualizado correctamente"
@@ -587,7 +616,6 @@ public class Formulario extends JFrame {
         int filaSelect = table1RE.getSelectedRow();
 
 
-
         int id = Integer.parseInt(
                 table1RE.getValueAt(filaSelect,0).toString()
         );
@@ -600,7 +628,7 @@ public class Formulario extends JFrame {
 
         if(conf) {
             this.registroLevantamiento.setIdRegistro(id);
-            if (this.registroLevantamiento.eliminarRegistroBD()) {
+            if (this.registroLevantamiento.borrarBD()) {
                 JOptionPane.showMessageDialog(
                         null,
                         "Registro eliminado correctamente"
@@ -639,14 +667,10 @@ public class Formulario extends JFrame {
 
         this.registroLevantamiento.setUsuario(this.usuario);
         // obtener grupo muscular
-        String grmuscul =
-                filtrarcomboBoxPP
-                        .getSelectedItem()
-                        .toString();
+        String grmuscul = filtrarcomboBoxPP.getSelectedItem().toString();
 
         // llamar filtro
-        List<RegistroLevantamiento> listReg =
-                registroLevantamiento.filtrarGrupoMuscular(grmuscul);
+        List<RegistroLevantamiento> listReg = registroLevantamiento.filtrarGrupoMuscular(grmuscul);
 
         // mostrar tabla
         mostrartablaPPfiltro(listReg);
@@ -720,10 +744,6 @@ public class Formulario extends JFrame {
         puestoRK.setText(String.valueOf(puestoUser));
     }
 
-    public void actualizarRk(){
-        FiltrarButon();
-
-    }
 
     public void DatosUser(){
         PesoAJ.setText(String.valueOf(usuario.getPeso()));
@@ -738,6 +758,7 @@ public class Formulario extends JFrame {
     public void AtrasAj(){
         Ajustes.setVisible(false);
         pagPrincipal.setVisible(true);
+        UserPP.setText(UserAJ.getText());
     }
 
     public void ActualizarAJ() {
@@ -749,7 +770,7 @@ public class Formulario extends JFrame {
             this.usuario.setEdad(Integer.parseInt(edadAJ.getText()));
             this.usuario.setPassword(PasswordAJ.getText());
 
-            if (this.usuario.actualizarRegistroBD()) {
+            if (this.usuario.actualizarBD()) {
                 JOptionPane.showMessageDialog(null, "\nDatos Actualizado correctamente....!!!\n");
             } else {
                 JOptionPane.showMessageDialog(null, "ERROR AL ACTUALIZAR");
@@ -759,11 +780,51 @@ public class Formulario extends JFrame {
                     "\nVerifique las cajas de texto que correspondan a valores numericos....!!!!\n " +
                             "\n Tipo de Error :" + e.getMessage());
         }
-
-
     }
 
+    public void BorrarCuentaAJ(){
 
+        int id = this.usuario.getId_usuario();
+
+        boolean conf = JOptionPane.showConfirmDialog(
+                null,
+                "¿Está seguro que quiere eliminar el usuario?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+
+        if(conf) {
+            this.usuario.setId_usuario(id);
+            if (this.usuario.borrarBD()) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Usuario eliminado correctamente"
+                );
+                InicioSesion.setVisible(true);
+                Ajustes.setVisible(false);
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Error al eliminar"
+                );
+            }
+        }
+    }
+
+    public void AgregarEjerciRE(){
+        RegistroPeso.setVisible(false);
+        Ejercicio.setVisible(true);
+    }
+
+    public void AtrasE(){
+        Ejercicio.setVisible(false);
+        RegistroPeso.setVisible(true);
+    }
+
+    public void mostrarTableE(){
+
+    }
 }
 
 
