@@ -566,7 +566,10 @@ public class Formulario extends JFrame {
 
             if(this.registroLevantamiento.busRegistro()){
                 JOptionPane.showMessageDialog(null,
-                        "Ya tienes registrado este ejercicio");
+                        "Ya tienes registrado " +
+                                this.ejercicio.getNombreEjercicio() +
+                                " con grupo muscular " +
+                                this.ejercicio.getGrupoMuscular());
             }
             else{
                 if(this.registroLevantamiento.insertarBD()){
@@ -707,51 +710,48 @@ public class Formulario extends JFrame {
 
 
 
-    public void mostrarTableRK(List<RegistroLevantamiento> listReg){
+    public void mostrarTableRK(List<RegistroLevantamiento> listReg) {
 
-        // Consultar todos los usuarios para cruzar información
         List<Usuario> listaUsuarios = this.usuario.consultarBD();
 
-        //Datos relacionados a la tabla
-        Object[][] filaDatos = new  Object[1][6];
-        Object[] nombreColumna = {"Puesto","Usuario","Edad","Maquina","Repeticiones","Peso"};
+        Object[] nombreColumna = {"Puesto", "Usuario", "Edad", "Maquina", "Repeticiones", "Peso"};
 
-        //asignar el modelo a la tabla
-        DefaultTableModel modeloTabla = (DefaultTableModel) (this.table1RK.getModel());
+        DefaultTableModel modeloTabla = (DefaultTableModel)(this.table1RK.getModel());
         modeloTabla.setRowCount(0);
-
         modeloTabla.setColumnIdentifiers(nombreColumna);
 
-        //Fuente para el encabezado de la tabla
-        JTableHeader tableHeader=this.table1RK.getTableHeader();
+        JTableHeader tableHeader = this.table1RK.getTableHeader();
         tableHeader.setBackground(Color.ORANGE);
         tableHeader.setForeground(Color.MAGENTA);
-        tableHeader.setFont(new Font("Impact", Font.ITALIC,14));
-
+        tableHeader.setFont(new Font("Impact", Font.ITALIC, 14));
 
         int puesto = 1;
 
-        for (RegistroLevantamiento registroLevantamiento1:listReg){
-            // Buscar el usuario correspondiente en la lista
+        // el nombre de la variable del for ahora es reg
+        // y dentro usamos reg, no registroLevantamiento
+        for (RegistroLevantamiento reg : listReg) {
+
+            if (reg.getUsuario() == null) continue;
+
             String edadUsuario = "—";
             for (Usuario u : listaUsuarios) {
-                if (u.getId_usuario() == registroLevantamiento.getUsuario().getId_usuario()) {
+                // reg.getUsuario() en lugar de registroLevantamiento.getUsuario()
+                if (u.getId_usuario() == reg.getUsuario().getId_usuario()) {
                     edadUsuario = String.valueOf(u.getEdad());
                     break;
                 }
             }
-            filaDatos[0][0] = puesto;
-            filaDatos[0][1] = registroLevantamiento1.getUsuario().getNombre();
-            filaDatos[0][2] =registroLevantamiento1.getEjercicio().getNombreEjercicio();
-            filaDatos[0][3] =registroLevantamiento1.getRepeticiones();
-            filaDatos[0][4] =registroLevantamiento1.getPesoLevantado();
 
-
-            modeloTabla.addRow(filaDatos[0]);
+            modeloTabla.addRow(new Object[]{
+                    puesto,
+                    reg.getUsuario().getNombre(),   // reg, no registroLevantamiento
+                    edadUsuario,
+                    reg.getEjercicio().getNombreEjercicio(),
+                    reg.getRepeticiones(),
+                    reg.getPesoLevantado()
+            });
             puesto++;
         }
-
-
 
     }
     public void FiltrarButon() {

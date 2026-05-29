@@ -185,8 +185,8 @@ public class Ejercicio implements CRUD{
         this.conexionBD = new ConexionBD();
 
         String sql = "SELECT * FROM Ejercicio " +
-                "WHERE TRIM(LOWER(nombre_ejercicio)) = " +
-                "TRIM(LOWER('" + this.nombreEjercicio + "'));";
+                "WHERE TRIM(LOWER(nombre_ejercicio)) = TRIM(LOWER('" + this.nombreEjercicio + "')) " +
+                "AND TRIM(LOWER(grupo_muscular)) = TRIM(LOWER('" + this.grupoMuscular + "'));";
 
 
 
