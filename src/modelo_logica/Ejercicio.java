@@ -64,6 +64,7 @@ public class Ejercicio implements CRUD{
 
         String sql = "INSERT INTO Ejercicio(nombre_ejercicio,grupo_muscular) VALUES('"+this.nombreEjercicio+"','"+
                 this.grupoMuscular+"');";
+
         if(this.conexionBD.setAutoCommitBD(false)){
             if(this.conexionBD.insertarBD(sql)){
                 this.conexionBD.commitBD();
@@ -182,8 +183,10 @@ public class Ejercicio implements CRUD{
 
         this.conexionBD = new ConexionBD();
 
-        String sql = "SELECT * FROM Ejercicio "+
-                "Where nombre_ejercicio = '"+this.nombreEjercicio+"';";
+        String sql = "SELECT * FROM Ejercicio " +
+                "WHERE TRIM(LOWER(nombre_ejercicio)) = " +
+                "TRIM(LOWER('" + this.nombreEjercicio + "'));";
+
 
 
         try{

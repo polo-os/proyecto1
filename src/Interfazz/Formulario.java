@@ -4,6 +4,7 @@ import enumm.Ejercicios;
 import enumm.GrMuscul;
 import modelo_logica.Ejercicio;
 import modelo_logica.RegistroLevantamiento;
+import modelo_logica.SesionEntrenamiento;
 import modelo_logica.Usuario;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
@@ -22,6 +23,7 @@ public class Formulario extends JFrame {
     private Usuario usuario;
     private RegistroLevantamiento registroLevantamiento;
     private Ejercicio ejercicio;
+    private SesionEntrenamiento sesionEntr;
 
     //Atributos
     private JPanel panel1;
@@ -89,7 +91,7 @@ public class Formulario extends JFrame {
     private JTextField puestoRK;
     private JComboBox filPcomboBox1RK;
     private JButton filtrarButtonRK;
-    private JButton actualizarButtonRK;
+    private JButton EliminarButtonSE;
     private JLabel puestoLabelRK;
     private JLabel filPorLabelRK;
     private JButton seleccionarButton;
@@ -109,19 +111,27 @@ public class Formulario extends JFrame {
     private JLabel edadLabelAJ;
     private JLabel PasswordLabelAJ;
     private JButton borrarCuentaButtonAJ;
-    private JButton agregarEjercicioRE;
     private JPanel Ejercicio;
-    private JTextField AgreEjercicioE;
-    private JTextField agreGruMuscularE;
-    private JTable table1E;
-    private JButton AtrasE;
-    private JButton eliminarButton;
-    private JButton actualizarButton;
-    private JButton agregarButton;
-    private JButton seleccionarButton1;
-    private JLabel agregarLabelE;
-    private JLabel agregarEjercicioLabelE;
-    private JLabel agregarGrupoMuscularLabelE;
+    private JTable table1SE;
+    private JButton AtrasSE;
+    private JButton actualizarButtonSE;
+    private JButton agregarButtonSE;
+    private JButton seleccionarButtonSE;
+    private JLabel sesionesDeEntrenamientoLabelSE;
+    private JLabel fechaLabelSE;
+    private JTextField FechaSE;
+    private JTextField DuracionSE;
+    private JTextArea textArea1SE;
+    private JLabel totalSecionesLabelSE;
+    private JLabel mesLabelSE;
+    private JLabel mesES;
+    private JLabel promedioLabel;
+    private JLabel promedioSE;
+    private JLabel nuevaSesionLabelSE;
+    private JLabel duracionMinutosLabelSE;
+    private JLabel SecionSE;
+    private JLabel notasLabelSE;
+    private JButton registroUSERButton;
 
 
     //Metodos
@@ -132,6 +142,7 @@ public class Formulario extends JFrame {
         this.usuario = new Usuario();
         this.registroLevantamiento = new RegistroLevantamiento();
         this.ejercicio = new Ejercicio();
+        this.sesionEntr = new SesionEntrenamiento();
 
 
         //recibe los valores de la clase enumm
@@ -263,23 +274,44 @@ public class Formulario extends JFrame {
                 BorrarCuentaAJ();
             }
         });
-        agregarEjercicioRE.addActionListener(new ActionListener() {
+
+        agregarButtonSE.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AgregarEjerciRE();
+                agregarSesionSE();
             }
         });
-        AtrasE.addActionListener(new ActionListener() {
+        seleccionarButtonSE.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AtrasE();
+                seleccionarSesionSE();
+            }
+        });
+        actualizarButtonSE.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                actualizarSesionSE();
+            }
+        });
+        EliminarButtonSE.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                eliminarSesionSE();
+            }
+        });
+        AtrasSE.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AtrasSE();
+            }
+        });
+        registroUSERButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                User();
             }
         });
     }
-
-
-
-
 
 
 
@@ -379,7 +411,8 @@ public class Formulario extends JFrame {
     public void atrasButtonRU(){
         InicioSesion.setVisible(true);
         RegistroRU.setVisible(false);
-
+        userin.setText("");
+        passwordin.setText("");
     }
 
 
@@ -812,19 +845,163 @@ public class Formulario extends JFrame {
         }
     }
 
-    public void AgregarEjerciRE(){
-        RegistroPeso.setVisible(false);
+
+    public void User(){
         Ejercicio.setVisible(true);
+        pagPrincipal.setVisible(false);
     }
-
-    public void AtrasE(){
+    public void AtrasSE(){
         Ejercicio.setVisible(false);
-        RegistroPeso.setVisible(true);
+        pagPrincipal.setVisible(true);
     }
 
-    public void mostrarTableE(){
+    public void mostrarTablaSE() {
+        Object[] columnas = {"id", "Fecha", "Duración (min)", "Notas"};
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.setColumnIdentifiers(columnas);
 
+        // Aquí va el nombre exacto de tu JTable del JScrollPane
+        // Revisa el diseñador y ponle field name: tablaSE
+        table1SE.setModel(modelo);
+
+        // Ocultar columna id
+        table1SE.getColumnModel().getColumn(0).setMinWidth(0);
+        table1SE.getColumnModel().getColumn(0).setMaxWidth(0);
+        table1SE.getColumnModel().getColumn(0).setPreferredWidth(0);
+
+        // Colores del header igual que el resto de tu app
+        JTableHeader header = table1SE.getTableHeader();
+        header.setBackground(Color.ORANGE);
+        header.setForeground(Color.MAGENTA);
+        header.setFont(new Font("Impact", Font.ITALIC, 14));
+
+        // Consultar BD
+        List<SesionEntrenamiento> lista =
+                sesionEntr.consultarRegistroBD(this.usuario.getId_usuario());
+
+        for (SesionEntrenamiento s : lista) {
+            modelo.addRow(new Object[]{
+                    s.getIdSesion(),
+                    s.getFecha(),
+                    s.getDuracionMin(),
+                    s.getNotas()
+            });
+        }
     }
+
+    public void agregarSesionSE() {
+        try {
+            sesionEntr = new SesionEntrenamiento();
+            sesionEntr.setFecha(FechaSE.getText()); // nombre de tu JTextField fecha
+            sesionEntr.setDuracionMin(Integer.parseInt(DuracionSE.getText())); // JTextField duracion
+            sesionEntr.setNotas(textArea1SE.getText());
+            sesionEntr.setUsuario(this.usuario);
+
+            if (sesionEntr.insertarRegistroBD()) {
+                JOptionPane.showMessageDialog(null, "Sesión agregada correctamente");
+                mostrarTablaSE();
+                limpiarCamposSE();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al agregar la sesión");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "Error al agregar sesión\nTipo de error: " + e.getMessage());
+        }
+    }
+
+    public void seleccionarSesionSE() {
+        int fila = table1SE.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un registro de la tabla");
+            return;
+        }
+
+        DefaultTableModel modelo = (DefaultTableModel) table1SE.getModel();
+
+        FechaSE.setText(modelo.getValueAt(fila, 1).toString());
+        DuracionSE.setText(modelo.getValueAt(fila, 2).toString());
+        textArea1SE.setText(modelo.getValueAt(fila, 3).toString());
+
+        // Habilitar actualizar y eliminar, deshabilitar agregar
+        actualizarButtonSE.setEnabled(true);
+        EliminarButtonSE.setEnabled(true);
+        agregarButtonSE.setEnabled(false);
+    }
+
+    public void actualizarSesionSE() {
+        int fila = table1SE.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un registro");
+            return;
+        }
+
+        try {
+            DefaultTableModel modelo = (DefaultTableModel) table1SE.getModel();
+            int idSesion = Integer.parseInt(modelo.getValueAt(fila, 0).toString());
+
+            sesionEntr.setIdSesion(idSesion);
+            sesionEntr.setFecha(FechaSE.getText());
+            sesionEntr.setDuracionMin(Integer.parseInt(DuracionSE.getText()));
+            sesionEntr.setNotas(textArea1SE.getText());
+
+            if (sesionEntr.actualizarRegistroBD()) {
+                JOptionPane.showMessageDialog(null, "Sesión actualizada correctamente");
+                mostrarTablaSE();
+                limpiarCamposSE();
+                actualizarButtonSE.setEnabled(false);
+                EliminarButtonSE.setEnabled(false);
+                agregarButtonSE.setEnabled(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al actualizar");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "Error:\n" + e.getMessage());
+        }
+    }
+
+    public void eliminarSesionSE() {
+        int fila = table1SE.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un registro");
+            return;
+        }
+
+        boolean conf = JOptionPane.showConfirmDialog(
+                null,
+                "¿Está seguro que quiere eliminar esta sesión?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+
+        if (conf) {
+            DefaultTableModel modelo = (DefaultTableModel) table1SE.getModel();
+            int idSesion = Integer.parseInt(modelo.getValueAt(fila, 0).toString());
+
+            sesionEntr.setIdSesion(idSesion);
+
+            if (sesionEntr.eliminarRegistroBD()) {
+                JOptionPane.showMessageDialog(null, "Sesión eliminada correctamente");
+                mostrarTablaSE();
+                limpiarCamposSE();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al eliminar");
+            }
+        }
+    }
+
+    public void limpiarCamposSE() {
+        FechaSE.setText("");
+        DuracionSE.setText("");
+        textArea1SE.setText("");
+        actualizarButtonSE.setEnabled(false);
+        EliminarButtonSE.setEnabled(false);
+        agregarButtonSE.setEnabled(true);
+    }
+
 }
 
 
