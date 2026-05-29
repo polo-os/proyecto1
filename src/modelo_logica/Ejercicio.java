@@ -125,8 +125,9 @@ public class Ejercicio implements CRUD{
 
         this.conexionBD = new ConexionBD();
 
-        String sql = "UPDATE Ejercicio SET nombre_ejercicio ='"+this.nombreEjercicio+"', grupo_muscular = '"+
-                this.grupoMuscular+"';";
+        String sql = "UPDATE Ejercicio SET "
+                + "grupo_muscular = '" + this.grupoMuscular + "' "
+                + "WHERE id_ejercicio = " + this.idEjercicio + ";";
 
         if(this.conexionBD.setAutoCommitBD(false)){
             if(this.conexionBD.actualizarBD(sql)){

@@ -113,25 +113,23 @@ public class Formulario extends JFrame {
     private JButton borrarCuentaButtonAJ;
     private JPanel Ejercicio;
     private JTable table1SE;
-    private JButton AtrasSE;
     private JButton actualizarButtonSE;
     private JButton agregarButtonSE;
     private JButton seleccionarButtonSE;
-    private JLabel sesionesDeEntrenamientoLabelSE;
-    private JLabel fechaLabelSE;
     private JTextField FechaSE;
     private JTextField DuracionSE;
     private JTextArea textArea1SE;
-    private JLabel totalSecionesLabelSE;
+    private JLabel sesionesDeEntrenamientoLabelSE;
+    private JLabel fechaLabelSE;
+    private JLabel totalSesionesLabelSE;
     private JLabel mesLabelSE;
-    private JLabel mesES;
-    private JLabel promedioLabel;
+    private JLabel mesSE;
+    private JLabel promedioLabelSE;
     private JLabel promedioSE;
     private JLabel nuevaSesionLabelSE;
     private JLabel duracionMinutosLabelSE;
-    private JLabel SecionSE;
     private JLabel notasLabelSE;
-    private JButton registroUSERButton;
+    private JLabel SesionSE;
 
 
     //Metodos
@@ -299,18 +297,6 @@ public class Formulario extends JFrame {
                 eliminarSesionSE();
             }
         });
-        AtrasSE.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AtrasSE();
-            }
-        });
-        registroUSERButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                User();
-            }
-        });
     }
 
 
@@ -361,6 +347,14 @@ public class Formulario extends JFrame {
             this.usuario.setPassword(passwordRU.getText());
 
             if (passworconfRU.getText().equals(this.usuario.getPassword())) {
+
+                // Verificar si el nombre ya existe ANTES de intentar insertar
+                if (this.usuario.busUser()) {
+                    JOptionPane.showMessageDialog(null,
+                            "El nombre de usuario '" + userRU.getText() +
+                                    "' ya está en uso.\nPor favor elige otro nombre.");
+                    return; // detiene el registro
+                }
                 if (this.usuario.insertarBD()) {
 
                     // iniciar sesión automáticamente
@@ -715,9 +709,12 @@ public class Formulario extends JFrame {
 
     public void mostrarTableRK(List<RegistroLevantamiento> listReg){
 
+        // Consultar todos los usuarios para cruzar información
+        List<Usuario> listaUsuarios = this.usuario.consultarBD();
+
         //Datos relacionados a la tabla
-        Object[][] filaDatos = new  Object[1][5];
-        Object[] nombreColumna = {"Puesto","Usuario","Maquina","Repeticiones","Peso"};
+        Object[][] filaDatos = new  Object[1][6];
+        Object[] nombreColumna = {"Puesto","Usuario","Edad","Maquina","Repeticiones","Peso"};
 
         //asignar el modelo a la tabla
         DefaultTableModel modeloTabla = (DefaultTableModel) (this.table1RK.getModel());
@@ -735,6 +732,14 @@ public class Formulario extends JFrame {
         int puesto = 1;
 
         for (RegistroLevantamiento registroLevantamiento1:listReg){
+            // Buscar el usuario correspondiente en la lista
+            String edadUsuario = "—";
+            for (Usuario u : listaUsuarios) {
+                if (u.getId_usuario() == registroLevantamiento.getUsuario().getId_usuario()) {
+                    edadUsuario = String.valueOf(u.getEdad());
+                    break;
+                }
+            }
             filaDatos[0][0] = puesto;
             filaDatos[0][1] = registroLevantamiento1.getUsuario().getNombre();
             filaDatos[0][2] =registroLevantamiento1.getEjercicio().getNombreEjercicio();
@@ -745,6 +750,7 @@ public class Formulario extends JFrame {
             modeloTabla.addRow(filaDatos[0]);
             puesto++;
         }
+
 
 
     }
@@ -777,7 +783,7 @@ public class Formulario extends JFrame {
         puestoRK.setText(String.valueOf(puestoUser));
     }
 
-
+    //Mostrar en ajustes
     public void DatosUser(){
         PesoAJ.setText(String.valueOf(usuario.getPeso()));
         AltAJ.setText(String.valueOf(usuario.getAltura()));
@@ -845,16 +851,6 @@ public class Formulario extends JFrame {
         }
     }
 
-
-    public void User(){
-        Ejercicio.setVisible(true);
-        pagPrincipal.setVisible(false);
-    }
-    public void AtrasSE(){
-        Ejercicio.setVisible(false);
-        pagPrincipal.setVisible(true);
-    }
-
     public void mostrarTablaSE() {
         Object[] columnas = {"id", "Fecha", "Duración (min)", "Notas"};
         DefaultTableModel modelo = new DefaultTableModel();
@@ -877,7 +873,7 @@ public class Formulario extends JFrame {
 
         // Consultar BD
         List<SesionEntrenamiento> lista =
-                sesionEntr.consultarRegistroBD(this.usuario.getId_usuario());
+                sesionEntr.consultarBD(this.usuario.getId_usuario());
 
         for (SesionEntrenamiento s : lista) {
             modelo.addRow(new Object[]{
@@ -897,7 +893,7 @@ public class Formulario extends JFrame {
             sesionEntr.setNotas(textArea1SE.getText());
             sesionEntr.setUsuario(this.usuario);
 
-            if (sesionEntr.insertarRegistroBD()) {
+            if (sesionEntr.insertarBD()) {
                 JOptionPane.showMessageDialog(null, "Sesión agregada correctamente");
                 mostrarTablaSE();
                 limpiarCamposSE();
@@ -947,7 +943,7 @@ public class Formulario extends JFrame {
             sesionEntr.setDuracionMin(Integer.parseInt(DuracionSE.getText()));
             sesionEntr.setNotas(textArea1SE.getText());
 
-            if (sesionEntr.actualizarRegistroBD()) {
+            if (sesionEntr.actualizarBD()) {
                 JOptionPane.showMessageDialog(null, "Sesión actualizada correctamente");
                 mostrarTablaSE();
                 limpiarCamposSE();
@@ -983,7 +979,7 @@ public class Formulario extends JFrame {
 
             sesionEntr.setIdSesion(idSesion);
 
-            if (sesionEntr.eliminarRegistroBD()) {
+            if (sesionEntr.borrarBD()) {
                 JOptionPane.showMessageDialog(null, "Sesión eliminada correctamente");
                 mostrarTablaSE();
                 limpiarCamposSE();

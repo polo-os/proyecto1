@@ -1,12 +1,13 @@
 package modelo_logica;
 
+import Conexion_bd.CRUD;
 import Conexion_bd.ConexionBD;
 import javax.swing.*;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SesionEntrenamiento {
+public class SesionEntrenamiento implements CRUD {
 
     // Atributos
     private int idSesion;
@@ -44,7 +45,8 @@ public class SesionEntrenamiento {
     // ── CRUD ──────────────────────────────────────────────
 
     // CREATE
-    public boolean insertarRegistroBD() {
+    @Override
+    public boolean insertarBD() {
         boolean conf;
         this.conexionBD = new ConexionBD();
 
@@ -72,7 +74,8 @@ public class SesionEntrenamiento {
     }
 
     // READ  — todas las sesiones de un usuario
-    public List<SesionEntrenamiento> consultarRegistroBD(int idUsuario) {
+
+    public List<SesionEntrenamiento> consultarBD(int idUsuario) {
         List<SesionEntrenamiento> lista = new ArrayList<>();
         this.conexionBD = new ConexionBD();
 
@@ -101,7 +104,8 @@ public class SesionEntrenamiento {
     }
 
     // UPDATE
-    public boolean actualizarRegistroBD() {
+    @Override
+    public boolean actualizarBD() {
         boolean conf;
         this.conexionBD = new ConexionBD();
 
@@ -129,7 +133,8 @@ public class SesionEntrenamiento {
     }
 
     // DELETE
-    public boolean eliminarRegistroBD() {
+    @Override
+    public boolean borrarBD() {
         boolean conf;
         this.conexionBD = new ConexionBD();
 
