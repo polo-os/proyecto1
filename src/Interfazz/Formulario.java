@@ -424,7 +424,7 @@ public class Formulario extends JFrame {
         table2PP.getColumnModel().getColumn(0).setMaxWidth(0);
         table2PP.getColumnModel().getColumn(0).setPreferredWidth(0);
         //Fuente para el encabezado de la tabla
-        JTableHeader tableHeader=this.table1RE.getTableHeader();
+        JTableHeader tableHeader=this.table2PP.getTableHeader();
         tableHeader.setBackground(Color.ORANGE);
         tableHeader.setForeground(Color.MAGENTA);
         tableHeader.setFont(new Font("Impact", Font.ITALIC,14));
