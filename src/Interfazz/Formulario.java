@@ -571,6 +571,10 @@ public class Formulario extends JFrame {
                     eliminarButtonRE.setEnabled(true);
                     seleccionarButton.setEnabled(true);
                     continuarButtonRE.setEnabled(true);
+                    ejercicioRE.setSelectedItem(0);
+                    grMusculRE.setSelectedItem(0);
+                    pesoRE.setText("");
+                    numeroRepeticionesRE.setText("");
                 }
                 else {
                     JOptionPane.showMessageDialog(null,
@@ -631,6 +635,10 @@ public class Formulario extends JFrame {
                     actualizarButtonRE.setEnabled(false);
                     eliminarButtonRE.setEnabled(true);
                     agregarButtonRE.setEnabled(true);
+                    ejercicioRE.setSelectedItem(0);
+                    grMusculRE.setSelectedItem(0);
+                    pesoRE.setText("");
+                    numeroRepeticionesRE.setText("");
 
                 } else {
                     JOptionPane.showMessageDialog(
