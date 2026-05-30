@@ -141,9 +141,11 @@ public class RegistroLevantamiento implements CRUD {
         this.conexionBD = new ConexionBD();
 
         //sentencia sql
-        String sql="UPDATE Registro_Levantamiento set peso="
-                +this.getPesoLevantado()+",repeticiones="+this.getRepeticiones()+
-                " WHERE id_registro="+this.getIdRegistro()+";";
+        String sql = "UPDATE Registro_Levantamiento SET "
+                + "peso = " + this.getPesoLevantado() + ", "
+                + "repeticiones = " + this.getRepeticiones() + ", "
+                + "id_ejercicio = " + this.ejercicio.getIdEjercicio() + " "
+                + "WHERE id_registro = " + this.getIdRegistro() + ";";
         if (this.conexionBD.setAutoCommitBD(false)){
             if (this.conexionBD.actualizarBD(sql)){
                 this.conexionBD.commitBD();

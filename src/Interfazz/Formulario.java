@@ -607,9 +607,21 @@ public class Formulario extends JFrame {
                 // Obtener id de la tabla
                 int idRegistro = Integer.parseInt(table1RE.getValueAt(filaSelect, 0).toString());
 
+                String nombreNuevo  = ejercicioRE.getSelectedItem().toString();
+                String grupoNuevo   = grMusculRE.getSelectedItem().toString();
+
+                this.ejercicio = new Ejercicio();
+                this.ejercicio.setNombreEjercicio(nombreNuevo);
+                this.ejercicio.setGrupoMuscular(grupoNuevo);
+
+                // Buscar si ese ejercicio+grupo ya existe en BD
+                // Si no existe, crearlo
+                if (!this.ejercicio.busEjercico()) {
+                    this.ejercicio.insertarBD();
+                    this.ejercicio.busEjercico(); // cargar el id recién creado
+                }
+
                 // Asignar datos nuevos
-                this.ejercicio.setNombreEjercicio(ejercicioRE.getSelectedItem().toString());
-                this.ejercicio.setGrupoMuscular(grMusculRE.getSelectedItem().toString());
                 this.registroLevantamiento.setIdRegistro(idRegistro);
                 this.registroLevantamiento.setEjercicio(this.ejercicio);
                 this.registroLevantamiento.setPesoLevantado(Integer.parseInt(pesoRE.getText()));
