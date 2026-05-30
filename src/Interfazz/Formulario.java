@@ -121,15 +121,9 @@ public class Formulario extends JFrame {
     private JTextArea textArea1SE;
     private JLabel sesionesDeEntrenamientoLabelSE;
     private JLabel fechaLabelSE;
-    private JLabel totalSesionesLabelSE;
-    private JLabel mesLabelSE;
-    private JLabel mesSE;
-    private JLabel promedioLabelSE;
-    private JLabel promedioSE;
     private JLabel nuevaSesionLabelSE;
     private JLabel duracionMinutosLabelSE;
     private JLabel notasLabelSE;
-    private JLabel SesionSE;
 
 
     //Metodos
