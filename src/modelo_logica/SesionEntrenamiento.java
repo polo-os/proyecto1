@@ -80,7 +80,7 @@ public class SesionEntrenamiento implements CRUD <SesionEntrenamiento>{
         this.conexionBD = new ConexionBD();
 
         String sql = "SELECT * FROM Sesion_Entrenamiento "
-                + "WHERE id_usuario = " + this.getUsuario()
+                + "WHERE id_usuario = " + this.getUsuario().getId_usuario()
                 + " ORDER BY fecha DESC;";
 
         try {
