@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegistroLevantamiento implements CRUD {
+public class RegistroLevantamiento implements CRUD <RegistroLevantamiento> {
     private  int idRegistro,pesoLevantado,repeticiones;
     //conexion bd
     private ConexionBD conexionBD;
@@ -97,8 +97,8 @@ public class RegistroLevantamiento implements CRUD {
     }
 
     //SELECT
-
-    public List<RegistroLevantamiento>consultarBD(int idusuario){
+    @Override
+    public List<RegistroLevantamiento>consultarBD(){
         List<RegistroLevantamiento> listaReg=new ArrayList<>();
 
         this.conexionBD=new ConexionBD();
@@ -106,7 +106,7 @@ public class RegistroLevantamiento implements CRUD {
         String sql = "SELECT id_registro,id_ejercicio,nombre_ejercicio,grupo_muscular,peso,repeticiones " +
                 "FROM Registro_Levantamiento " +
                 "INNER JOIN Ejercicio USING(id_ejercicio) " +
-                "WHERE id_usuario = "+idusuario+";";
+                "WHERE id_usuario = "+this.usuario.getId_usuario()+";";
         try {
 
             ResultSet rs=this.conexionBD.consultarBD(sql);

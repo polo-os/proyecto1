@@ -52,8 +52,8 @@ public class Formulario extends JFrame {
     private JTextField passwordRU;
     private JLabel confPasswordLabelRU;
     private JTextField kgRu;
-
     private JPanel RegistroRU;
+
     private JPanel RegistroPeso;
     private JComboBox ejercicioRE;
     private JTextField pesoRE;
@@ -69,6 +69,7 @@ public class Formulario extends JFrame {
     private JLabel numeroRepeticionesRE;
     private JLabel grMusculJlabelRE;
     private JComboBox grMusculRE;
+    private JButton seleccionarButtonRE;
 
     private JPanel pagPrincipal;
     private JTabbedPane tabbedPane1;
@@ -83,18 +84,18 @@ public class Formulario extends JFrame {
     private JButton acPesoButtonPP;
     private JButton filtrarButtonPP;
     private JButton cerrarSesionButtonPP;
+    private JPanel paginaPrincipal;
+    private JButton datosUsuarioButtonPP;
 
     private JPanel ranking;
     private JTable table1RK;
     private JLabel tablaLabelRK;
-    private JPanel paginaPrincipal;
     private JTextField puestoRK;
     private JComboBox filPcomboBox1RK;
     private JButton filtrarButtonRK;
-    private JButton EliminarButtonSE;
     private JLabel puestoLabelRK;
     private JLabel filPorLabelRK;
-    private JButton seleccionarButton;
+
     private JPanel Ajustes;
     private JLabel ajustesLabelAJ;
     private JLabel pesoLabelAJ;
@@ -102,7 +103,6 @@ public class Formulario extends JFrame {
     private JTextField PesoAJ;
     private JTextField AltAJ;
     private JButton actualizarButtonAJ;
-    private JButton datosUsuarioButton;
     private JButton atrasbuttonAJ;
     private JTextField edadAJ;
     private JTextField UserAJ;
@@ -111,6 +111,7 @@ public class Formulario extends JFrame {
     private JLabel edadLabelAJ;
     private JLabel PasswordLabelAJ;
     private JButton borrarCuentaButtonAJ;
+
     private JPanel Ejercicio;
     private JTable table1SE;
     private JButton actualizarButtonSE;
@@ -124,6 +125,7 @@ public class Formulario extends JFrame {
     private JLabel nuevaSesionLabelSE;
     private JLabel duracionMinutosLabelSE;
     private JLabel notasLabelSE;
+    private JButton EliminarButtonSE;
 
 
     //Metodos
@@ -137,7 +139,7 @@ public class Formulario extends JFrame {
         this.sesionEntr = new SesionEntrenamiento();
 
 
-        //recibe los valores de la clase enumm
+        //recibe los valores de la clase enumm Ejercicio
         JComboBox jComboBox = new JComboBox(Ejercicios.values());
 
         ejercicioRE.setModel(jComboBox.getModel());
@@ -145,6 +147,8 @@ public class Formulario extends JFrame {
 
         AutoCompleteDecorator.decorate(ejercicioRE);
         AutoCompleteDecorator.decorate(filPcomboBox1RK);
+
+        //recibe los valores de la clase enumm Grupo
 
         JComboBox jComboBox2 = new JComboBox(GrMuscul.values());
 
@@ -221,7 +225,7 @@ public class Formulario extends JFrame {
                 continuarButtonRE();
             }
         });
-        seleccionarButton.addActionListener(new ActionListener() {
+        seleccionarButtonRE.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 seleccionarButton();
@@ -233,7 +237,7 @@ public class Formulario extends JFrame {
                 FiltrarButon();
             }
         });
-        datosUsuarioButton.addActionListener(new ActionListener() {
+        datosUsuarioButtonPP.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DatosUser();
@@ -294,8 +298,7 @@ public class Formulario extends JFrame {
     }
 
 
-
-
+    //Inicio
     //Registrar
     public void irRegistrarButton(){
         InicioSesion.setVisible(false);
@@ -328,6 +331,8 @@ public class Formulario extends JFrame {
         }
     }
 
+
+    //registrar
     //Registrar Usuario
     public void registrarButtonRU(){
 
@@ -381,21 +386,6 @@ public class Formulario extends JFrame {
         }
     }
 
-    //ir a actualizar
-    public void acPesoButtonPP(){
-        pagPrincipal.setVisible(false);
-        RegistroPeso.setVisible(true);
-        actualizarButtonRE.setEnabled(false);
-        mostrartablaRE();
-        seleccionarButton.setEnabled(true);
-        eliminarButtonRE.setEnabled(true);
-        continuarButtonRE.setEnabled(true);
-
-
-    }
-
-
-
     public void atrasButtonRU(){
         InicioSesion.setVisible(true);
         RegistroRU.setVisible(false);
@@ -403,7 +393,7 @@ public class Formulario extends JFrame {
         passwordin.setText("");
     }
 
-
+    //pagina pp
     public void mostrartablaPP(){
         this.registroLevantamiento = new RegistroLevantamiento();
         //Datos de la tabla
@@ -423,8 +413,8 @@ public class Formulario extends JFrame {
         tableHeader.setForeground(Color.MAGENTA);
         tableHeader.setFont(new Font("Impact", Font.ITALIC,14));
 
-
-        List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarBD(this.usuario.getId_usuario());
+        registroLevantamiento.setUsuario(this.usuario);
+        List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarBD();
 
         for(RegistroLevantamiento registroLevantamiento:listaReg){
             filaDatos[0][0]=registroLevantamiento.getIdRegistro();
@@ -474,8 +464,54 @@ public class Formulario extends JFrame {
         }
     }
 
+    public void cerrarSesionButtonPP(){
+        pagPrincipal.setVisible(false);
+        InicioSesion.setVisible(true);
+    }
 
-    //mostrar tabla
+    public void calcularmci(){
+        float Imc = (float) (usuario.getPeso()/Math.pow(usuario.getAltura(),2));
+        imcPP.setText(String.format("%.2f", Imc));
+    }
+
+    public void filtrarButtonPP(){
+
+        this.registroLevantamiento.setUsuario(this.usuario);
+        // obtener grupo muscular
+        String grmuscul = filtrarcomboBoxPP.getSelectedItem().toString();
+
+        // llamar filtro
+        List<RegistroLevantamiento> listReg = registroLevantamiento.filtrarGrupoMuscular(grmuscul);
+
+        // mostrar tabla
+        mostrartablaPPfiltro(listReg);
+
+    }
+
+    public void acPesoButtonPP(){
+        pagPrincipal.setVisible(false);
+        RegistroPeso.setVisible(true);
+        actualizarButtonRE.setEnabled(false);
+        mostrartablaRE();
+        seleccionarButtonRE.setEnabled(true);
+        eliminarButtonRE.setEnabled(true);
+        continuarButtonRE.setEnabled(true);
+
+
+    }
+
+    public void DatosUser(){
+        PesoAJ.setText(String.valueOf(usuario.getPeso()));
+        AltAJ.setText(String.valueOf(usuario.getAltura()));
+        UserAJ.setText(String.valueOf(usuario.getNombre()));
+        edadAJ.setText(String.valueOf(usuario.getEdad()));
+        PasswordAJ.setText(usuario.getPassword());
+        Ajustes.setVisible(true);
+        pagPrincipal.setVisible(false);
+    }
+
+
+    //Registrar user
     public void mostrartablaRE(){
         //Datos de la tabla
         Object[][] filaDatos= new Object[1][5];
@@ -495,8 +531,8 @@ public class Formulario extends JFrame {
         tableHeader.setForeground(Color.MAGENTA);
         tableHeader.setFont(new Font("Impact", Font.ITALIC,14));
 
-
-        List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarBD(this.usuario.getId_usuario());
+        registroLevantamiento.setUsuario(this.usuario);
+        List<RegistroLevantamiento> listaReg=registroLevantamiento.consultarBD();
 
         for(RegistroLevantamiento registroLevantamiento:listaReg){
             filaDatos[0][0]=registroLevantamiento.getIdRegistro();
@@ -532,7 +568,6 @@ public class Formulario extends JFrame {
         }
     }
 
-    //Agregar Peso
     public void agregarButtonRE(){
         this.registroLevantamiento=new RegistroLevantamiento();
         this.ejercicio = new Ejercicio();
@@ -569,7 +604,7 @@ public class Formulario extends JFrame {
                 if(this.registroLevantamiento.insertarBD()){
                     mostrartablaRE();
                     eliminarButtonRE.setEnabled(true);
-                    seleccionarButton.setEnabled(true);
+                    seleccionarButtonRE.setEnabled(true);
                     continuarButtonRE.setEnabled(true);
                     ejercicioRE.setSelectedItem(0);
                     grMusculRE.setSelectedItem(0);
@@ -586,7 +621,6 @@ public class Formulario extends JFrame {
         }
 
     }
-
 
     public void actualizarButtonRE() {
 
@@ -655,7 +689,6 @@ public class Formulario extends JFrame {
             }
         }
 
-
     public   void eliminarButtonRE(){
         int filaSelect = table1RE.getSelectedRow();
 
@@ -696,34 +729,7 @@ public class Formulario extends JFrame {
         calcularmci();
     }
 
-    public void cerrarSesionButtonPP(){
-        pagPrincipal.setVisible(false);
-        InicioSesion.setVisible(true);
-    }
-
-    public void calcularmci(){
-       float Imc = (float) (usuario.getPeso()/Math.pow(usuario.getAltura(),2));
-       imcPP.setText(String.format("%.2f", Imc));
-    }
-
-
-    public void filtrarButtonPP(){
-
-        this.registroLevantamiento.setUsuario(this.usuario);
-        // obtener grupo muscular
-        String grmuscul = filtrarcomboBoxPP.getSelectedItem().toString();
-
-        // llamar filtro
-        List<RegistroLevantamiento> listReg = registroLevantamiento.filtrarGrupoMuscular(grmuscul);
-
-        // mostrar tabla
-        mostrartablaPPfiltro(listReg);
-
-    }
-
-
-
-
+    //Ranking
     public void mostrarTableRK(List<RegistroLevantamiento> listReg) {
 
         List<Usuario> listaUsuarios = this.usuario.consultarBD();
@@ -768,6 +774,7 @@ public class Formulario extends JFrame {
         }
 
     }
+
     public void FiltrarButon() {
 
 
@@ -797,17 +804,7 @@ public class Formulario extends JFrame {
         puestoRK.setText(String.valueOf(puestoUser));
     }
 
-    //Mostrar en ajustes
-    public void DatosUser(){
-        PesoAJ.setText(String.valueOf(usuario.getPeso()));
-        AltAJ.setText(String.valueOf(usuario.getAltura()));
-        UserAJ.setText(String.valueOf(usuario.getNombre()));
-        edadAJ.setText(String.valueOf(usuario.getEdad()));
-        PasswordAJ.setText(usuario.getPassword());
-        Ajustes.setVisible(true);
-        pagPrincipal.setVisible(false);
-    }
-
+    //ajustes
     public void AtrasAj(){
         Ajustes.setVisible(false);
         pagPrincipal.setVisible(true);
@@ -865,6 +862,7 @@ public class Formulario extends JFrame {
         }
     }
 
+    //Notas
     public void mostrarTablaSE() {
         Object[] columnas = {"id", "Fecha", "Duración (min)", "Notas"};
         DefaultTableModel modelo = new DefaultTableModel();
@@ -886,8 +884,8 @@ public class Formulario extends JFrame {
         header.setFont(new Font("Impact", Font.ITALIC, 14));
 
         // Consultar BD
-        List<SesionEntrenamiento> lista =
-                sesionEntr.consultarBD(this.usuario.getId_usuario());
+        sesionEntr.setUsuario(this.usuario);
+        List<SesionEntrenamiento> lista = sesionEntr.consultarBD();
 
         for (SesionEntrenamiento s : lista) {
             modelo.addRow(new Object[]{

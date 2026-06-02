@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ejercicio implements CRUD{
+public class Ejercicio implements CRUD<Ejercicio>{
 
     private int idEjercicio;
     private String nombreEjercicio,grupoMuscular;
@@ -86,6 +86,7 @@ public class Ejercicio implements CRUD{
     }
 
     //CRUD READ
+    @Override
     public List<Ejercicio> consultarBD(){
         List<Ejercicio> ejercicioList =new ArrayList<>();
 

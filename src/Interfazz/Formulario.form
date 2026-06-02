@@ -426,7 +426,7 @@
               <editable value="true"/>
             </properties>
           </component>
-          <component id="f27b0" class="javax.swing.JButton" binding="seleccionarButton" default-binding="true">
+          <component id="f27b0" class="javax.swing.JButton" binding="seleccionarButtonRE">
             <constraints>
               <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -584,7 +584,7 @@
                       <grid row="0" column="3" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                     </constraints>
                   </vspacer>
-                  <component id="f8ead" class="javax.swing.JButton" binding="datosUsuarioButton" default-binding="true">
+                  <component id="f8ead" class="javax.swing.JButton" binding="datosUsuarioButtonPP">
                     <constraints>
                       <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>

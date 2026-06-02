@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Usuario implements CRUD {
+public class Usuario implements CRUD <Usuario>{
     private int id_usuario;
     private String nombre;
     private int edad;
@@ -129,7 +129,7 @@ public class Usuario implements CRUD {
     }
 
     //CRUD READ
-
+    @Override
     public List<Usuario> consultarBD(){
         List<Usuario> usuarioList = new ArrayList<>();
 

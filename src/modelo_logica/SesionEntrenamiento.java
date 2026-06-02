@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SesionEntrenamiento implements CRUD {
+public class SesionEntrenamiento implements CRUD <SesionEntrenamiento>{
 
     // Atributos
     private int idSesion;
@@ -74,13 +74,13 @@ public class SesionEntrenamiento implements CRUD {
     }
 
     // READ  — todas las sesiones de un usuario
-
-    public List<SesionEntrenamiento> consultarBD(int idUsuario) {
+    @Override
+    public List<SesionEntrenamiento> consultarBD() {
         List<SesionEntrenamiento> lista = new ArrayList<>();
         this.conexionBD = new ConexionBD();
 
         String sql = "SELECT * FROM Sesion_Entrenamiento "
-                + "WHERE id_usuario = " + idUsuario
+                + "WHERE id_usuario = " + this.getUsuario()
                 + " ORDER BY fecha DESC;";
 
         try {
