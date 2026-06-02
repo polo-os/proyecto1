@@ -672,7 +672,7 @@ public class Formulario extends JFrame {
                     ejercicioRE.setSelectedItem(0);
                     grMusculRE.setSelectedItem(0);
                     pesoRE.setText("");
-                    numeroRepeticionesRE.setText("");
+                    repeticionesRE.setText("");
 
                 } else {
                     JOptionPane.showMessageDialog(
