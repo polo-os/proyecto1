@@ -42,7 +42,7 @@ public class SesionEntrenamiento implements CRUD <SesionEntrenamiento>{
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    // ── CRUD ──────────────────────────────────────────────
+    // CRUD
 
     // CREATE
     @Override

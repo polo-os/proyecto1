@@ -8,8 +8,4 @@ public interface  CRUD <T> {
     List<T> consultarBD();
     boolean actualizarBD();
     boolean borrarBD();
-
-
-
-
 }
