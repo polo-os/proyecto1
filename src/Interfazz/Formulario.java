@@ -79,7 +79,7 @@ public class Formulario extends JFrame {
     private JTable table2PP;
     private JLabel paginaPrincipalLabelPP;
     private JLabel userLabelPP;
-    private JLabel imcLabel;
+    private JLabel imcLabelPP;
     private JLabel filPorLabelPP;
     private JButton acPesoButtonPP;
     private JButton filtrarButtonPP;

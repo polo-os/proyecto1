@@ -482,7 +482,7 @@
                       <text value="Usuario :"/>
                     </properties>
                   </component>
-                  <component id="57065" class="javax.swing.JLabel" binding="imcLabel">
+                  <component id="57065" class="javax.swing.JLabel" binding="imcLabelPP">
                     <constraints>
                       <grid row="3" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -599,7 +599,9 @@
                 <constraints>
                   <tabbedpane title="Ranking"/>
                 </constraints>
-                <properties/>
+                <properties>
+                  <visible value="true"/>
+                </properties>
                 <border type="none"/>
                 <children>
                   <scrollpane id="c51bb">
@@ -630,6 +632,7 @@
                     </constraints>
                     <properties>
                       <text value="Filtrar Por :"/>
+                      <visible value="true"/>
                     </properties>
                   </component>
                   <component id="fd487" class="javax.swing.JLabel" binding="puestoLabelRK">
