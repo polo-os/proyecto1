@@ -32,7 +32,7 @@ public class Usuario implements CRUD <Usuario>{
         this.conexionBD = conexionBD;
     }
 
-    public Usuario(int id_usuario, String nombre, byte edad, float altura, int peso, String password, ConexionBD conexionBD) {
+    public Usuario(int id_usuario, String nombre, int edad, float altura, int peso, String password, ConexionBD conexionBD) {
         this.id_usuario = id_usuario;
         this.nombre = nombre;
         this.edad = edad;
@@ -88,14 +88,6 @@ public class Usuario implements CRUD <Usuario>{
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public ConexionBD getConexionBD() {
-        return conexionBD;
-    }
-
-    public void setConexionBD(ConexionBD conexionBD) {
-        this.conexionBD = conexionBD;
     }
 
     //CRUD Create
