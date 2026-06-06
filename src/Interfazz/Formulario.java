@@ -467,6 +467,8 @@ public class Formulario extends JFrame {
     public void cerrarSesionButtonPP(){
         pagPrincipal.setVisible(false);
         InicioSesion.setVisible(true);
+        table1SE.setVisible(false);
+        table1RK.setVisible(false);
     }
 
     public void calcularmci(){
@@ -847,6 +849,8 @@ public class Formulario extends JFrame {
                 );
                 InicioSesion.setVisible(true);
                 Ajustes.setVisible(false);
+                table1SE.setVisible(false);
+                table1RK.setVisible(false);
 
             } else {
 
