@@ -18,17 +18,15 @@ public class Ejercicio implements CRUD<Ejercicio>{
 
     public Ejercicio() {}
 
-    public Ejercicio(String nombreEjercicio, String grupoMuscular, ConexionBD conexionBD) {
+    public Ejercicio(String nombreEjercicio, String grupoMuscular) {
         this.nombreEjercicio = nombreEjercicio;
         this.grupoMuscular = grupoMuscular;
-        this.conexionBD = conexionBD;
     }
 
-    public Ejercicio(int idEjercicio, String nombreEjercicio, String grupoMuscular, ConexionBD conexionBD) {
+    public Ejercicio(int idEjercicio, String nombreEjercicio, String grupoMuscular) {
         this.idEjercicio = idEjercicio;
         this.nombreEjercicio = nombreEjercicio;
         this.grupoMuscular = grupoMuscular;
-        this.conexionBD = conexionBD;
     }
 
     public int getIdEjercicio() {

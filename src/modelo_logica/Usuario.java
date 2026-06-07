@@ -23,23 +23,21 @@ public class Usuario implements CRUD <Usuario>{
 
     public Usuario() {}
 
-    public Usuario(String nombre, int edad, float altura, int peso, String password, ConexionBD conexionBD) {
+    public Usuario(String nombre, int edad, float altura, int peso, String password) {
         this.nombre = nombre;
         this.edad = edad;
         this.altura = altura;
         this.peso = peso;
         this.password = password;
-        this.conexionBD = conexionBD;
     }
 
-    public Usuario(int id_usuario, String nombre, int edad, float altura, int peso, String password, ConexionBD conexionBD) {
+    public Usuario(int id_usuario, String nombre, int edad, float altura, int peso, String password) {
         this.id_usuario = id_usuario;
         this.nombre = nombre;
         this.edad = edad;
         this.altura = altura;
         this.peso = peso;
         this.password = password;
-        this.conexionBD = conexionBD;
     }
 
     public int getId_usuario() {

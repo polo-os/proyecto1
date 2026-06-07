@@ -11,5 +11,5 @@ public enum GrMuscul {
     Cuádriceps,
     Femorales,
     Aductores,
-    Pantorrila
+    Pantorrilla
 }
