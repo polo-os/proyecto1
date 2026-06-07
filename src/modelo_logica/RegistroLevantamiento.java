@@ -18,15 +18,11 @@ public class RegistroLevantamiento implements CRUD <RegistroLevantamiento> {
     public RegistroLevantamiento() {
     }
 
-    public RegistroLevantamiento(int pesoLevantado, int repeticiones) {
+    public RegistroLevantamiento(int pesoLevantado, int repeticiones, Ejercicio ejercicio, Usuario usuario) {
         this.pesoLevantado = pesoLevantado;
         this.repeticiones = repeticiones;
-    }
-
-    public RegistroLevantamiento(int idRegistro, int pesoLevantado, int repeticiones) {
-        this.idRegistro = idRegistro;
-        this.pesoLevantado = pesoLevantado;
-        this.repeticiones = repeticiones;
+        this.ejercicio = ejercicio;
+        this.usuario = usuario;
     }
 
     public Ejercicio getEjercicio() {

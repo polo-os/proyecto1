@@ -613,7 +613,9 @@
                     <children>
                       <component id="bbe39" class="javax.swing.JTable" binding="table1RK">
                         <constraints/>
-                        <properties/>
+                        <properties>
+                          <visible value="true"/>
+                        </properties>
                       </component>
                     </children>
                   </scrollpane>

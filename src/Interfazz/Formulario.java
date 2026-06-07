@@ -395,7 +395,6 @@ public class Formulario extends JFrame {
 
     //pagina pp
     public void mostrartablaPP(){
-        this.registroLevantamiento = new RegistroLevantamiento();
         //Datos de la tabla
         Object[][] filaDatos= new Object[1][5];
         Object[] nombreColumnas={"id","Ejercicio","Grupo Muscular","Peso","Repeticiones"};
@@ -469,6 +468,7 @@ public class Formulario extends JFrame {
         InicioSesion.setVisible(true);
         table1SE.setVisible(false);
         table1RK.setVisible(false);
+        puestoRK.setText("");
     }
 
     public void calcularmci(){
@@ -571,8 +571,6 @@ public class Formulario extends JFrame {
     }
 
     public void agregarButtonRE(){
-        this.registroLevantamiento=new RegistroLevantamiento();
-        this.ejercicio = new Ejercicio();
 
         try {
             this.registroLevantamiento.setPesoLevantado(Integer.parseInt(pesoRE.getText()));
@@ -723,6 +721,10 @@ public class Formulario extends JFrame {
     public void continuarButtonRE(){
         pagPrincipal.setVisible(true);
         RegistroPeso.setVisible(false);
+        agregarButtonRE.setEnabled(true);
+        eliminarButtonRE.setEnabled(false);
+        seleccionarButtonRE.setEnabled(false);
+        continuarButtonRE.setEnabled(false);
         mostrartablaPP();
         calcularmci();
     }
@@ -745,15 +747,12 @@ public class Formulario extends JFrame {
 
         int puesto = 1;
 
-        // el nombre de la variable del for ahora es reg
-        // y dentro usamos reg, no registroLevantamiento
         for (RegistroLevantamiento reg : listReg) {
 
             if (reg.getUsuario() == null) continue;
 
             String edadUsuario = "—";
             for (Usuario u : listaUsuarios) {
-                // reg.getUsuario() en lugar de registroLevantamiento.getUsuario()
                 if (u.getId_usuario() == reg.getUsuario().getId_usuario()) {
                     edadUsuario = String.valueOf(u.getEdad());
                     break;
@@ -800,6 +799,8 @@ public class Formulario extends JFrame {
 
         //mostrar puesto
         puestoRK.setText(String.valueOf(puestoUser));
+        table1RK.setVisible(true);
+
     }
 
     //ajustes
@@ -851,6 +852,7 @@ public class Formulario extends JFrame {
                 Ajustes.setVisible(false);
                 table1SE.setVisible(false);
                 table1RK.setVisible(false);
+                puestoRK.setText("");
 
             } else {
 
@@ -868,8 +870,6 @@ public class Formulario extends JFrame {
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.setColumnIdentifiers(columnas);
 
-        // Aquí va el nombre exacto de tu JTable del JScrollPane
-        // Revisa el diseñador y ponle field name: tablaSE
         table1SE.setModel(modelo);
 
         // Ocultar columna id
@@ -877,7 +877,7 @@ public class Formulario extends JFrame {
         table1SE.getColumnModel().getColumn(0).setMaxWidth(0);
         table1SE.getColumnModel().getColumn(0).setPreferredWidth(0);
 
-        // Colores del header igual que el resto de tu app
+        // encabezado
         JTableHeader header = table1SE.getTableHeader();
         header.setBackground(Color.ORANGE);
         header.setForeground(Color.MAGENTA);

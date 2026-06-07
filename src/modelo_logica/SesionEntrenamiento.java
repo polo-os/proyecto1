@@ -20,10 +20,19 @@ public class SesionEntrenamiento implements CRUD <SesionEntrenamiento>{
     // Constructores
     public SesionEntrenamiento() {}
 
-    public SesionEntrenamiento(String fecha, int duracionMin, String notas) {
-        this.fecha = fecha;
+    public SesionEntrenamiento(int duracionMin, String fecha, String notas, Usuario usuario) {
         this.duracionMin = duracionMin;
+        this.fecha = fecha;
         this.notas = notas;
+        this.usuario = usuario;
+    }
+
+    public SesionEntrenamiento(int idSesion, int duracionMin, String fecha, String notas, Usuario usuario) {
+        this.idSesion = idSesion;
+        this.duracionMin = duracionMin;
+        this.fecha = fecha;
+        this.notas = notas;
+        this.usuario = usuario;
     }
 
     // Getters y Setters
